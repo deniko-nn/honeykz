@@ -4,7 +4,7 @@
   src: url("fonts/Rostov.woff2") format("woff2"),
        url("fonts/Rostov.woff") format("woff"),
        url("fonts/Rostov.ttf") format("truetype");
-  font-weight: 400 700;
+  font-weight: 400;
   font-display: swap;
 }
 
@@ -14,7 +14,7 @@
   --cream: #fff6df;
   --brown: #3a2208;
   --ink: #2a1a08;
-  --font-display: "Rostov", "Playfair Display", Georgia, serif;
+  --font-display: "Rostov", Georgia, serif;
   --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
@@ -44,7 +44,7 @@ ul { list-style: none; }
   display: flex; align-items: center; justify-content: space-between; gap: 24px;
   padding: 24px clamp(20px, 5vw, 64px);
 }
-.logo { font-family: var(--font-display); font-size: 1.9rem; font-weight: 700; color: var(--brown); }
+.logo { font-family: var(--font-display); font-size: 1.9rem; font-weight: 400; color: var(--brown); }
 .logo span { color: var(--amber); }
 .nav ul { display: flex; gap: 32px; font-weight: 500; }
 .nav ul a { padding: 6px 0; border-bottom: 2px solid transparent; transition: border-color .2s; }
@@ -65,7 +65,7 @@ ul { list-style: none; }
   font-size: .85rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
 }
 h1 {
-  font-family: var(--font-display); font-weight: 700;
+  font-family: var(--font-display); font-weight: 400;
   font-size: clamp(2.6rem, 6.4vw, 5.6rem); line-height: 1.02; letter-spacing: -.01em;
   color: var(--brown);
 }
@@ -83,7 +83,7 @@ h1 {
 .btn-ghost:hover { background: rgba(58, 34, 8, .08); }
 
 .facts { display: flex; flex-wrap: wrap; gap: 12px 40px; margin-top: 44px; font-size: .9rem; color: #5a3d14; }
-.facts b { display: block; font-family: var(--font-display); font-size: 1.7rem; color: var(--brown); }
+.facts b { font-weight: 400; display: block; font-family: var(--font-display); font-size: 1.7rem; color: var(--brown); }
 
 /* банка */
 .hero-visual { position: relative; display: grid; place-items: center; }
@@ -100,13 +100,13 @@ h1 {
   width: 70%; padding: 22px 12px; text-align: center; border-radius: 12px;
   background: var(--cream); color: var(--brown); box-shadow: 0 4px 14px rgba(0, 0, 0, .18);
 }
-.label strong { display: block; margin: 6px 0; font-family: var(--font-display); font-size: 2rem; line-height: 1.05; }
+.label strong { font-weight: 400; display: block; margin: 6px 0; font-family: var(--font-display); font-size: 2rem; line-height: 1.05; }
 .label small { display: block; font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--amber); font-weight: 600; }
 .badge {
   position: absolute; right: 2%; top: 6%; width: 104px; height: 104px; border-radius: 50%;
   display: grid; place-items: center; text-align: center;
   background: var(--brown); color: var(--cream); transform: rotate(12deg);
-  font-family: var(--font-display); font-size: 1.05rem; line-height: 1.15;
+  font-family: var(--font-display); font-size: 1.05rem; line-height: 1.15; font-weight: 400;
   box-shadow: 0 8px 20px rgba(58, 34, 8, .35);
 }
 @keyframes float { 50% { transform: translateY(-14px) rotate(-1.5deg); } }
