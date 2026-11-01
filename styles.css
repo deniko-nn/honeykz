@@ -10,10 +10,16 @@
 
 :root {
   /* палитра */
+  /* палитра A — какао (основа: фон, текст, кнопки) */
   --cocoa: #7d5a50;
   --caramel: #b4846c;
   --peach: #e5b299;
   --cream: #fcdec0;
+  /* палитра B — закат (акценты: мёд, значки, плашки) */
+  --coral: #fa5c5c;
+  --salmon: #fd8a6b;
+  --apricot: #fec288;
+  --lemon: #fbef76;
   /* производные: чуть темнее для мелкого текста, чтобы хватало контраста */
   --brown: #7d5a50;
   --ink: #4b3029;
@@ -33,7 +39,7 @@ ul { list-style: none; }
   display: flex; flex-direction: column;
   position: relative; overflow: hidden;
   background:
-    radial-gradient(48% 62% at 76% 48%, var(--peach), rgba(229, 178, 153, 0) 72%),
+    radial-gradient(48% 62% at 76% 48%, var(--apricot), rgba(254, 194, 136, 0) 72%),
     var(--cream);
 }
 /* соты */
@@ -65,7 +71,7 @@ ul { list-style: none; }
 .eyebrow {
   display: inline-block; margin-bottom: 20px;
   padding: 8px 16px; border-radius: 999px;
-  background: var(--peach); color: var(--ink);
+  background: var(--lemon); color: var(--ink);
   font-size: .85rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
 }
 h1 {
@@ -82,13 +88,13 @@ h1 {
 }
 .btn:hover { transform: translateY(-2px); }
 .btn-primary { background: var(--cocoa); color: var(--cream); box-shadow: 0 10px 24px rgba(125, 90, 80, .35); }
-.btn-primary:hover { background: #6a4a41; }
+.btn-primary:hover { background: #6a4a41; box-shadow: 0 10px 24px rgba(250, 92, 92, .4); }
 .btn-ghost { border: 2px solid var(--brown); color: var(--brown); }
-.btn-ghost:hover { background: var(--peach); }
+.btn-ghost:hover { background: var(--lemon); }
 
 .facts { display: flex; flex-wrap: wrap; gap: 12px 40px; margin-top: 44px; font-size: .9rem; color: var(--ink); }
 .facts li { position: relative; }
-.facts b { text-decoration: underline 4px var(--caramel); text-underline-offset: 6px; }
+.facts b { text-decoration: underline 4px var(--coral); text-underline-offset: 6px; }
 .facts b { font-weight: 400; display: block; font-family: var(--font-display); font-size: 1.7rem; color: var(--brown); }
 
 /* банка */
@@ -97,8 +103,8 @@ h1 {
 .lid { width: 62%; height: 38px; margin: 0 auto; border-radius: 10px 10px 4px 4px; background: linear-gradient(#8a665b, #5e4037); }
 .glass {
   height: 420px; margin-top: -2px; border-radius: 28px 28px 48px 48px; position: relative;
-  background: linear-gradient(100deg, #a06a52 0%, #b4846c 38%, #e5b299 58%, #a77258 100%);
-  box-shadow: inset -18px 0 36px rgba(75, 48, 41, .4), inset 14px 0 24px rgba(252, 222, 192, .55), 0 30px 50px rgba(75, 48, 41, .3);
+  background: linear-gradient(100deg, #ee8a45 0%, var(--salmon) 16%, var(--apricot) 42%, var(--lemon) 68%, #f2a53f 100%);
+  box-shadow: inset -18px 0 36px rgba(160, 50, 30, .35), inset 14px 0 24px rgba(251, 239, 118, .6), 0 30px 50px rgba(125, 90, 80, .35);
   display: grid; place-items: center;
 }
 .glass::after { content: ""; position: absolute; left: 12%; top: 8%; width: 10%; height: 70%; border-radius: 99px; background: rgba(255, 255, 255, .35); filter: blur(3px); }
@@ -111,7 +117,7 @@ h1 {
 .badge {
   position: absolute; right: 2%; top: 6%; width: 104px; height: 104px; border-radius: 50%;
   display: grid; place-items: center; text-align: center;
-  background: var(--cocoa); color: var(--cream); border: 3px solid var(--cream); transform: rotate(12deg);
+  background: var(--coral); color: var(--ink); border: 3px solid var(--cocoa); transform: rotate(12deg);
   font-family: var(--font-display); font-size: 1.05rem; line-height: 1.15; font-weight: 400;
   box-shadow: 0 8px 20px rgba(75, 48, 41, .35);
 }
@@ -120,7 +126,7 @@ h1 {
 
 @media (max-width: 860px) {
   .nav ul { display: none; }
-  .hero { background: radial-gradient(70% 36% at 50% 26%, var(--peach), rgba(229, 178, 153, 0) 75%), var(--cream); }
+  .hero { background: radial-gradient(70% 36% at 50% 26%, var(--apricot), rgba(254, 194, 136, 0) 75%), var(--cream); }
   .hero-inner { grid-template-columns: 1fr; padding-bottom: 48px; }
   .hero-visual { order: -1; }
   .glass { height: 280px; }
