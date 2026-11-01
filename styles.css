@@ -20,6 +20,8 @@
   --salmon: #fd8a6b;
   --apricot: #fec288;
   --lemon: #fbef76;
+  /* белый: только для текста на тёмном какао */
+  --white: #ffffff;
   /* производные: чуть темнее для мелкого текста, чтобы хватало контраста */
   --brown: #7d5a50;
   --ink: #4b3029;
@@ -87,7 +89,7 @@ h1 {
   font-weight: 600; font-size: 1rem; transition: transform .15s, box-shadow .15s, background .15s;
 }
 .btn:hover { transform: translateY(-2px); }
-.btn-primary { background: var(--cocoa); color: var(--cream); box-shadow: 0 10px 24px rgba(125, 90, 80, .35); }
+.btn-primary { background: var(--cocoa); color: var(--white); box-shadow: 0 10px 24px rgba(125, 90, 80, .35); }
 .btn-primary:hover { background: #6a4a41; box-shadow: 0 10px 24px rgba(250, 92, 92, .4); }
 .btn-ghost { border: 2px solid var(--brown); color: var(--brown); }
 .btn-ghost:hover { background: var(--lemon); }
