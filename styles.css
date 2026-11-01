@@ -8,6 +8,13 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: "Jura";
+  src: url("fonts/Jura-Light.woff2") format("woff2");
+  font-weight: 300;
+  font-display: swap;
+}
+
 :root {
   /* палитра C — «Ночной луг» (текущая) */
   --night: #10231d;
@@ -106,11 +113,11 @@ h1 {
   background: radial-gradient(circle, rgba(246, 199, 104, .34), rgba(233, 169, 58, 0) 68%);
   animation: glow 7s ease-in-out infinite;
 }
-.jar { position: relative; width: min(440px, 72vw); filter: drop-shadow(0 30px 50px rgba(0, 0, 0, .35)); }
-.jar-art { display: block; width: 100%; height: auto; overflow: visible; }
+.plate { position: relative; width: min(440px, 76vw); }
+.plate-art { display: block; width: 100%; height: auto; }
 
 .seal {
-  position: absolute; right: 0; bottom: 14%; width: 100px; height: 100px; border-radius: 50%;
+  position: absolute; right: 0; top: 4%; width: 96px; height: 96px; border-radius: 50%;
   display: grid; place-items: center; text-align: center;
   background: var(--night); color: var(--white);
   border: 1px solid var(--honey); box-shadow: 0 0 0 5px var(--night), 0 0 0 6px rgba(233, 169, 58, .45);
@@ -128,7 +135,7 @@ h1 {
   .nav ul { display: none; }
   .hero-inner { grid-template-columns: 1fr; padding-top: 32px; padding-bottom: 48px; }
   .hero-visual { order: -1; }
-  .jar { width: min(250px, 64vw); }
+  .plate { width: min(300px, 72vw); }
   .seal { width: 84px; height: 84px; font-size: .85rem; }
   .btn { flex: 1 1 100%; text-align: center; }
 }
