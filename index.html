@@ -38,12 +38,109 @@
     </div>
 
     <div class="hero-visual" aria-hidden="true">
-      <div class="jar">
-        <div class="lid"></div>
-        <div class="glass">
-          <div class="label"><strong>Горный<br>мёд</strong><small>1 кг</small></div>
-        </div>
-      </div>
+      <div class="jar"><svg class="jar-art" viewBox="0 0 520 760" role="img" aria-label="Банка мёда, по стеклу стекает мёд" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="hg" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#a9600e"/><stop offset=".3" stop-color="#e29a26"/>
+      <stop offset=".55" stop-color="#f8cf6f"/><stop offset=".8" stop-color="#e9a93a"/><stop offset="1" stop-color="#9c570c"/>
+    </linearGradient>
+    <linearGradient id="honey" x1="0" x2="1" y1=".1" y2=".9">
+      <stop offset="0" stop-color="#8f4d09"/><stop offset=".28" stop-color="#d98e1f"/>
+      <stop offset=".55" stop-color="#f6bd4a"/><stop offset=".8" stop-color="#df9420"/><stop offset="1" stop-color="#7c4108"/>
+    </linearGradient>
+    <radialGradient id="core" cx=".5" cy=".68" r=".55">
+      <stop offset="0" stop-color="#ffe08a" stop-opacity=".95"/><stop offset="1" stop-color="#ffe08a" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="topShade" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#3b1c02" stop-opacity=".75"/><stop offset=".22" stop-color="#3b1c02" stop-opacity="0"/>
+      <stop offset=".8" stop-color="#3b1c02" stop-opacity="0"/><stop offset="1" stop-color="#3b1c02" stop-opacity=".35"/>
+    </linearGradient>
+    <linearGradient id="glassEdge" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity=".85"/><stop offset=".35" stop-color="#fff" stop-opacity=".12"/>
+      <stop offset=".7" stop-color="#fff" stop-opacity=".1"/><stop offset="1" stop-color="#ffe6a8" stop-opacity=".7"/>
+    </linearGradient>
+    <linearGradient id="lidg" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#5a4219"/><stop offset=".12" stop-color="#c9a24d"/><stop offset=".3" stop-color="#f3de9c"/>
+      <stop offset=".5" stop-color="#b98f3c"/><stop offset=".78" stop-color="#e2c274"/><stop offset="1" stop-color="#4c3813"/>
+    </linearGradient>
+    <linearGradient id="labelg" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#d9ccae"/><stop offset=".18" stop-color="#f6eeda"/><stop offset=".8" stop-color="#f6eeda"/><stop offset="1" stop-color="#cdbf9d"/>
+    </linearGradient>
+    <radialGradient id="poolg" cx=".5" cy=".4" r=".6">
+      <stop offset="0" stop-color="#f8cf6f"/><stop offset=".6" stop-color="#e29a26"/><stop offset="1" stop-color="#a9600e"/>
+    </radialGradient>
+    <radialGradient id="shadowg" cx=".5" cy=".5" r=".5">
+      <stop offset="0" stop-color="#000" stop-opacity=".55"/><stop offset="1" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <clipPath id="inside"><path transform="rotate(-12 260 330)" d="M200 130 H320 C322 158 390 158 390 222 V496 C390 538 368 555 332 555 H188 C152 555 130 538 130 496 V222 C130 158 198 158 200 130 Z"/></clipPath>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="2.4"/></filter>
+    <filter id="dshadow" x="-30%" y="-10%" width="160%" height="130%"><feDropShadow dx="2.5" dy="3.5" stdDeviation="2.2" flood-color="#2a1200" flood-opacity=".4"/></filter>
+    <filter id="blur6"><feGaussianBlur stdDeviation="6"/></filter>
+  </defs>
+
+  <!-- тень и лужа -->
+  <ellipse cx="250" cy="738" rx="190" ry="14" fill="url(#shadowg)"/>
+  <ellipse cx="236" cy="722" rx="132" ry="17" fill="url(#poolg)"/>
+  <ellipse cx="236" cy="722" rx="132" ry="17" fill="none" stroke="#fff3c4" stroke-opacity=".45" stroke-width="1.4"/>
+  <ellipse cx="236" cy="718" rx="86" ry="9" fill="none" stroke="#fff" stroke-opacity=".28" stroke-width="1.2"/>
+  <ellipse cx="206" cy="716" rx="36" ry="3.6" fill="#fff" fill-opacity=".55" filter="url(#soft)"/>
+
+  <!-- нить мёда из-под банки -->
+  <path d="M184 560 C192 612 194 664 191 716 L207 716 C204 664 207 612 214 566 Z" fill="url(#hg)"/>
+  <path d="M191 578 C196 622 197 668 195 712" stroke="#fff" stroke-opacity=".6" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+  <!-- мёд, стекающий с нижнего края -->
+  <path d="M172 560 C178 548 220 546 226 560 C228 584 212 596 199 596 C184 596 170 584 172 560 Z" fill="url(#hg)" filter="url(#dshadow)"/>
+
+  <!-- банка -->
+  <g transform="rotate(-12 260 330)">
+    <path d="M190 128 H330 C332 160 400 160 400 215 V500 C400 545 375 565 335 565 H185 C145 565 120 545 120 500 V215 C120 160 188 160 190 128 Z" fill="#fff" fill-opacity=".05"/>
+    <path d="M200 130 H320 C322 158 390 158 390 222 V496 C390 538 368 555 332 555 H188 C152 555 130 538 130 496 V222 C130 158 198 158 200 130 Z" fill="url(#honey)"/>
+    <path d="M200 130 H320 C322 158 390 158 390 222 V496 C390 538 368 555 332 555 H188 C152 555 130 538 130 496 V222 C130 158 198 158 200 130 Z" fill="url(#core)"/>
+    <path d="M200 130 H320 C322 158 390 158 390 222 V496 C390 538 368 555 332 555 H188 C152 555 130 538 130 496 V222 C130 158 198 158 200 130 Z" fill="url(#topShade)"/>
+    <!-- пузырьки -->
+    <g fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="1">
+      <circle cx="352" cy="238" r="3.4"/><circle cx="342" cy="262" r="2"/><circle cx="160" cy="470" r="2.6"/><circle cx="356" cy="470" r="1.8"/><circle cx="330" cy="508" r="3"/>
+    </g>
+    <!-- этикетка -->
+    <g>
+      <rect x="168" y="298" width="184" height="152" rx="3" fill="url(#labelg)" stroke="#8c6a2f" stroke-width="1.2"/>
+      <rect x="175" y="305" width="170" height="138" rx="1.5" fill="none" stroke="#8c6a2f" stroke-opacity=".65" stroke-width=".8"/>
+      <text x="260" y="364" text-anchor="middle" font-family="Rostov, Georgia, serif" font-size="34" fill="#10231d">Горный</text>
+      <text x="260" y="404" text-anchor="middle" font-family="Rostov, Georgia, serif" font-size="34" fill="#10231d">мёд</text>
+      <line x1="236" y1="418" x2="284" y2="418" stroke="#8c6a2f" stroke-width="1"/>
+      <text x="260" y="436" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" font-weight="600" letter-spacing=".8" fill="#8c6a2f">1 кг</text>
+    </g>
+    <!-- блики стекла -->
+    <path d="M142 236 C139 330 139 430 146 506" stroke="#fff" stroke-opacity=".7" stroke-width="9" stroke-linecap="round" fill="none" filter="url(#soft)"/>
+    <path d="M152 224 C150 300 150 360 152 400" stroke="#fff" stroke-opacity=".5" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+    <path d="M376 250 C380 340 380 440 372 510" stroke="#ffe9b0" stroke-opacity=".6" stroke-width="4" stroke-linecap="round" fill="none" filter="url(#soft)"/>
+    <path d="M214 174 C240 186 290 186 312 172" stroke="#fff" stroke-opacity=".45" stroke-width="3" stroke-linecap="round" fill="none" filter="url(#soft)"/>
+    <path d="M190 128 H330 C332 160 400 160 400 215 V500 C400 545 375 565 335 565 H185 C145 565 120 545 120 500 V215 C120 160 188 160 190 128 Z" fill="none" stroke="url(#glassEdge)" stroke-width="2.4"/>
+    <!-- крышка -->
+    <rect x="176" y="118" width="168" height="14" rx="3" fill="#2a1f0b" fill-opacity=".55"/>
+    <rect x="178" y="72" width="164" height="58" rx="8" fill="url(#lidg)"/>
+    <g stroke="#3d2c0c" stroke-opacity=".22" stroke-width="1"><line x1="184" y1="80" x2="184" y2="124"/><line x1="190" y1="80" x2="190" y2="124"/><line x1="196" y1="80" x2="196" y2="124"/><line x1="202" y1="80" x2="202" y2="124"/><line x1="208" y1="80" x2="208" y2="124"/><line x1="214" y1="80" x2="214" y2="124"/><line x1="220" y1="80" x2="220" y2="124"/><line x1="226" y1="80" x2="226" y2="124"/><line x1="232" y1="80" x2="232" y2="124"/><line x1="238" y1="80" x2="238" y2="124"/><line x1="244" y1="80" x2="244" y2="124"/><line x1="250" y1="80" x2="250" y2="124"/><line x1="256" y1="80" x2="256" y2="124"/><line x1="262" y1="80" x2="262" y2="124"/><line x1="268" y1="80" x2="268" y2="124"/><line x1="274" y1="80" x2="274" y2="124"/><line x1="280" y1="80" x2="280" y2="124"/><line x1="286" y1="80" x2="286" y2="124"/><line x1="292" y1="80" x2="292" y2="124"/><line x1="298" y1="80" x2="298" y2="124"/><line x1="304" y1="80" x2="304" y2="124"/><line x1="310" y1="80" x2="310" y2="124"/><line x1="316" y1="80" x2="316" y2="124"/><line x1="322" y1="80" x2="322" y2="124"/><line x1="328" y1="80" x2="328" y2="124"/><line x1="334" y1="80" x2="334" y2="124"/></g>
+    <rect x="178" y="72" width="164" height="9" rx="4" fill="#fff" fill-opacity=".38"/>
+    <rect x="178" y="122" width="164" height="8" rx="3" fill="#2a1f0b" fill-opacity=".35"/>
+  </g>
+
+  <!-- мёд, стекающий по банке (в экранных координатах: течёт строго вниз) -->
+  <g fill="url(#hg)" filter="url(#dshadow)">
+    <path d="M130 154 C132 138 156 136 172 138 C196 134 214 130 232 128 C246 128 250 138 240 144 C228 150 222 147 212 153 C198 162 190 158 174 164 C156 170 134 168 130 154 Z"/>
+    <path d="M131.2 150.0 C138.7 186.2 139.3 213.3 141.3 263.0 C143.4 312.7 143.4 348.7 142.8 357.1 C141.6 363.4 137.5 362.4 137.5 374.4 A10.5 10.5 0 0 0 158.5 374.4 C158.5 362.4 154.4 363.4 153.2 357.1 C152.6 348.7 152.6 312.7 154.7 263.0 C156.7 213.3 157.3 186.2 164.8 150.0 Z"/>
+    <path d="M169.7 146.0 C175.7 168.7 176.1 185.8 177.7 217.0 C179.3 248.2 179.3 265.9 178.9 272.7 C177.9 277.8 174.5 276.9 174.5 286.7 A8.5 8.5 0 0 0 191.5 286.7 C191.5 276.9 188.1 277.8 187.1 272.7 C186.7 265.9 186.7 248.2 188.3 217.0 C189.9 185.8 190.3 168.7 196.3 146.0 Z"/>
+    <path d="M208.6 138.0 C213.3 154.0 213.6 166.0 214.9 188.0 C216.1 210.0 216.1 220.8 215.8 226.1 C215.0 230.1 212.4 229.4 212.4 237.0 A6.6 6.6 0 0 0 225.6 237.0 C225.6 229.4 223.0 230.1 222.2 226.1 C221.9 220.8 221.9 210.0 223.1 188.0 C224.4 166.0 224.7 154.0 229.4 138.0 Z"/>
+  </g>
+  <path d="M142 147 C160 142 188 141 210 136 C220 133 228 131 234 131" stroke="#fff" stroke-opacity=".7" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+  <path d="M146.0 184 C145.7 274.3 146.3 344.5 146.0 351.9" stroke="#fff" stroke-opacity=".55" stroke-width="2.9" stroke-linecap="round" fill="none"/><ellipse cx="144.3" cy="367.6" rx="2.3" ry="4.0" fill="#fff" fill-opacity=".8"/>
+    <path d="M181.4 180 C181.2 224.1 181.6 262.5 181.4 268.4" stroke="#fff" stroke-opacity=".55" stroke-width="2.3" stroke-linecap="round" fill="none"/><ellipse cx="180.0" cy="281.2" rx="1.9" ry="3.2" fill="#fff" fill-opacity=".8"/>
+    <path d="M217.7 172 C217.6 193.0 217.9 218.2 217.7 222.8" stroke="#fff" stroke-opacity=".55" stroke-width="1.8" stroke-linecap="round" fill="none"/><ellipse cx="216.7" cy="232.7" rx="1.5" ry="2.5" fill="#fff" fill-opacity=".8"/>
+
+  <!-- падающая капля -->
+  <path d="M148 560 C151 574 159 582 159 592 A11 11 0 1 1 137 592 C137 582 145 574 148 560 Z" fill="url(#hg)" transform="translate(0 0)"/>
+  <ellipse cx="143" cy="592" rx="2.4" ry="4.4" fill="#fff" fill-opacity=".8"/>
+</svg></div>
       <div class="seal">Свежий<br>урожай</div>
     </div>
   </div>
