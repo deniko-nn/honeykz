@@ -41,7 +41,7 @@
   function palette(tone) {
     var rgb = hexToRgb(tone) || [240, 185, 63], hsl = rgbToHsl(rgb[0], rgb[1], rgb[2]);
     var h = hsl[0];
-    return { bg: hslToHex(h, 0.9, 0.91), bg2: hslToHex(h, 0.82, 0.78), accent: hslToHex(h, 0.85, 0.24) };
+    return { bg: hslToHex(h, 0.75, 0.975), bg2: hslToHex(h, 0.6, 0.925), accent: hslToHex(h, 0.85, 0.24) };
   }
 
   /* ---------- картинки-заглушки (пока нет фото) ---------- */
