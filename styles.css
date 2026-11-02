@@ -374,7 +374,7 @@ b { font-weight: 600; }
 .cart-btn .cart-n { min-width: 22px; height: 22px; padding: 0 6px; display: inline-grid; place-items: center; border-radius: 999px; background: rgb(128 128 128 / .35); color: inherit; font: 600 12px/1 var(--text); font-variant-numeric: tabular-nums; }
 .cart-btn.has-items .cart-n { background: #f0b93f; color: #2a1a08; }
 .cart-btn:hover .cart-btn-t { text-decoration: underline; text-underline-offset: 4px; }
-@media (min-width: 1024px) { .hnav { padding-right: 190px; } }
+@media (min-width: 1024px) { .hnav { padding-right: 190px; } .site-header.is-collapsed .hnav { padding-right: 0; } }
 @media (max-width: 1023px) {
   .cart-btn { top: 10px; right: calc(max(var(--pad), env(safe-area-inset-right)) + 82px); }
   .cart-btn-t { display: none; }
