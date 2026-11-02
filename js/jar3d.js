@@ -38,7 +38,7 @@ window.Jar3D = (function () {
       x.fillStyle = ink; x.textAlign = 'center'; x.textBaseline = 'alphabetic';
       x.fillText(o.title, W / 2, 112);
       if (o.sub) {
-        x.globalAlpha = 0.7; x.font = '500 15px Onest, system-ui, sans-serif';
+        x.globalAlpha = 0.7; x.font = '500 15px "Iosevka Charon Mono", monospace';
         if ('letterSpacing' in x) x.letterSpacing = '3px';
         x.fillText(String(o.sub).toUpperCase(), W / 2, 152);
         if ('letterSpacing' in x) x.letterSpacing = '0px';
@@ -62,7 +62,7 @@ window.Jar3D = (function () {
   /* Шрифты подгружаются не сразу: после загрузки перерисовываем этикетки. */
   function fontsReady(fn) {
     if (document.fonts && document.fonts.load) {
-      Promise.all([document.fonts.load('600 40px "Cormorant Garamond"'), document.fonts.load('500 15px Onest')]).then(fn, fn);
+      Promise.all([document.fonts.load('600 40px "Cormorant Garamond"'), document.fonts.load('500 15px "Iosevka Charon Mono"')]).then(fn, fn);
     } else fn();
   }
 
