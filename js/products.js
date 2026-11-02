@@ -172,26 +172,19 @@
       (p.desc ? '<p class="desc">' + esc(p.desc) + '</p>' : '') +
       '<div class="details">' + (specs ? '<div class="specs">' + specs + '</div>' : '') + benefits +
       (p.storage ? '<p class="usage"><b>Хранение:</b> ' + esc(p.storage) + '</p>' : '') + '</div>' +
-      '<div class="buy-row">' + price + '<button class="more" type="button" aria-expanded="false">Подробнее</button><button class="buy" type="button" data-name="' + esc(p.name) + '">Купить</button></div>' +
+      '<div class="buy-row">' + price + '<button class="more" type="button" aria-expanded="false">Подробнее</button><button class="buy" type="button" data-id="' + p.id + '">В корзину</button></div>' +
       '</div></div></article>';
   }
 
   var host = document.getElementById('products');
   if (host) host.innerHTML = products.map(panel).join('');
 
-  /* Кнопка «Купить»: если указан номер WhatsApp, открываем чат с названием мёда. */
-  document.addEventListener('click', function (e) {
-    var b = e.target.closest && e.target.closest('.buy');
-    if (!b) return;
-    var num = String(settings.whatsapp || '').replace(/\D/g, '');
-    if (!num) return;
-    window.open('https://wa.me/' + num + '?text=' + encodeURIComponent('Здравствуйте! Хочу заказать мёд «' + b.getAttribute('data-name') + '».'), '_blank', 'noopener');
-  });
-
   /* Данные для остальных скриптов: список банок для 3D и подписи для плашки. */
   var heroCount = Math.max(1, Math.min(4, settings.банок_на_главном_экране || 4));
   window.HoneyData = {
     products: products,
+    money: money,
+    settings: settings,
     heroJars: products.slice(0, heroCount).map(function (p) { return { key: p.id, tone: p.tone3d, lid: p.lid, label: p.label }; }),
     chipNames: products.reduce(function (m, p, i) { m[p.id] = { name: p.chip, index: i }; return m; }, {})
   };
