@@ -314,6 +314,31 @@ b { font-weight: 600; }
   .story-head h2 { font-size: 26px; }
 }
 
+/* ---------- горшок с мёдом в углу: раскрывается по мере прокрутки ---------- */
+#honey-pot {
+  --pot-size: 50px;  /* размер горшка */
+  --pot-gap: 20px;   /* отступ от правого и нижнего края */
+  --hairline-stroke: 1;
+  /* светлые участки страницы */
+  --hairline-plate: #fffdf8; --hairline-hi: #17171a; --hairline-edge: #5c5c66;
+  --hairline-mid: #8a8a94; --hairline-lo: #c0c0c7;
+  position: fixed; z-index: 70;
+  right: max(var(--pot-gap), env(safe-area-inset-right));
+  bottom: max(var(--pot-gap), env(safe-area-inset-bottom));
+  width: var(--pot-size); height: var(--pot-size); aspect-ratio: auto;
+  pointer-events: none;
+}
+/* тёмные участки: главный экран и контакты */
+#honey-pot[data-pot-theme="dark"] {
+  --hairline-plate: #0c0905; --hairline-hi: #f0f3f8; --hairline-edge: #9a9ca5;
+  --hairline-mid: #5b5d64; --hairline-lo: #3e3e44;
+}
+#honey-pot svg { overflow: visible; }
+@media (max-width: 1023px) {
+  /* на телефоне выше нижней панели «цена и Купить» */
+  #honey-pot { bottom: calc(96px + env(safe-area-inset-bottom)); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .discover { animation: none; }
   .rv > span { transform: none; }

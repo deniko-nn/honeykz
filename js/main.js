@@ -117,8 +117,11 @@
   });
   $$('[data-go]').forEach(function (b) { b.addEventListener('click', function () { go(b.getAttribute('data-go')); }); });
 
-  function dark() { header.classList.add('is-dark'); }
-  function light() { header.classList.remove('is-dark'); }
+  /* Цвет шапки и горшка зависит от участка: на светлых блоках тёмные линии, на тёмных — светлые. */
+  var potEl = document.getElementById('honey-pot');
+  function potTheme(onLight) { if (potEl) potEl.setAttribute('data-pot-theme', onLight ? 'light' : 'dark'); }
+  function dark() { header.classList.add('is-dark'); potTheme(true); }
+  function light() { header.classList.remove('is-dark'); potTheme(false); }
   ScrollTrigger.create({ trigger: '#products', start: 'top 20%', refreshPriority: -1, onEnter: dark, onEnterBack: dark, onLeaveBack: light });
   ScrollTrigger.create({ trigger: '#contact', start: 'top 50%', refreshPriority: -1, onEnter: light, onEnterBack: light, onLeaveBack: dark });
 
@@ -129,14 +132,21 @@
   function syncHero() {
     if (!hero) return;
     var on = window.scrollY < window.innerHeight * 1.15;
-    if (on === heroOn) return;
+    if (on) {
+      /* start() и setActive() безопасны при повторном вызове, поэтому включаем при каждой проверке */
+      hero.setActive(true);
+      if (finished) hero.start();
+    } else if (heroOn) {
+      hero.deselect(); hero.setActive(false); hero.stop();
+    }
     heroOn = on;
-    hero.setActive(on);
-    if (on) { if (finished) hero.start(); }
-    else { hero.deselect(); hero.stop(); }
   }
-  window.addEventListener('scroll', syncHero, { passive: true });
-  window.addEventListener('resize', syncHero);
+  /* Проверяем не только при прокрутке, но и при движении мыши и касании: если какое-то
+     событие прокрутки пропущено, главный экран всё равно включится. */
+  ['scroll', 'resize', 'pointermove', 'pointerdown', 'wheel', 'touchstart', 'keydown'].forEach(function (t) {
+    window.addEventListener(t, syncHero, { passive: true });
+  });
+  document.addEventListener('visibilitychange', syncHero);
 
   var chip = $('#heroChip'), chipName = $('#heroChipName');
   if (hero) {
