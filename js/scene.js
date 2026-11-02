@@ -18,11 +18,10 @@ window.HeroScene = function (canvas, opts) {
   scene.fog = new THREE.FogExp2(BG, 0.045);
   scene.environment = Jar3D.makeEnv(renderer);
 
-  var camera = new THREE.PerspectiveCamera(mobile ? 50 : 36, 1, 0.1, 100);
-  var baseY = mobile ? 2.4 : 2.1;
-  var baseX = mobile ? -0.4 : -2.0;
-  camera.position.set(baseX, baseY, mobile ? 15 : 14);
-  var lookAt = new THREE.Vector3(baseX, mobile ? 1.5 : 1.0, 0);
+  /* Кадрирование зависит от формы окна: широкий экран держит банки справа от заголовка,
+     портрет (телефон) ставит их по центру в верхней части. */
+  var camera = new THREE.PerspectiveCamera(36, 1, 0.1, 100);
+  var baseX = -2.0, baseY = 2.1, lookAt = new THREE.Vector3(baseX, 1.0, 0), spread = 1, portrait = null;
 
   /* ---------- пол ---------- */
   var floor = new THREE.Mesh(
@@ -33,7 +32,6 @@ window.HeroScene = function (canvas, opts) {
   scene.add(floor);
 
   /* ---------- банки ---------- */
-  var spread = mobile ? 0.62 : 1;
   var defs = [
     { key: 'tsvetochny', tone: '#e8a21e', x: -3.0, z: 0.5, s: 1.0, ry: 0.5 },
     { key: 'gorny', tone: '#b8680f', x: 0.2, z: -0.7, s: 1.5, ry: 0, lid: 0x3a2a1a },
@@ -47,8 +45,23 @@ window.HeroScene = function (canvas, opts) {
     g.rotation.y = d.ry;
     g.traverse(function (m) { if (m.isMesh) { m.userData.key = d.key; pickables.push(m); } });
     scene.add(g);
-    jars[d.key] = { group: g, z0: d.z, ry0: d.ry, rotTarget: d.ry, hover: 0 };
+    jars[d.key] = { group: g, x0: d.x, z0: d.z, ry0: d.ry, rotTarget: d.ry, hover: 0 };
   });
+
+  function framing() {
+    var asp = window.innerWidth / window.innerHeight, p = asp < 0.9;
+    if (p === portrait) return;
+    var first = portrait === null;
+    portrait = p;
+    camera.fov = p ? 48 : 36;
+    baseX = p ? -0.1 : -2.7; baseY = p ? 2.4 : 2.1;
+    camera.position.z = p ? 16.5 : 14;
+    lookAt.set(baseX, p ? 0.1 : 1.0, 0);
+    spread = p ? 0.56 : 1;
+    Object.keys(jars).forEach(function (k) { jars[k].group.position.x = jars[k].x0 * spread; });
+    if (first) { camera.position.x = baseX; camera.position.y = baseY; }
+    camera.updateProjectionMatrix();
+  }
 
   /* ---------- соты и ложка ---------- */
   function addComb(cx, cz, rings, rot, seedOffset) {
@@ -157,20 +170,32 @@ window.HeroScene = function (canvas, opts) {
     onSelect(selected);
   }
   window.addEventListener('pointermove', pointer);
+  var down = null;
   window.addEventListener('pointerdown', function (e) {
     if (!active || overUI(e)) return;
     pointer(e); ray.setFromCamera(ndc, camera);
-    var k = pick();
-    if (k && k === selected) drag = { key: k, x: e.clientX, moved: 0 };
-    else if (k) choose(k);
+    var k = pick(), touch = e.pointerType === 'touch';
+    down = { x: e.clientX, y: e.clientY, t: e.timeStamp, touch: touch };
+    if (k && k === selected && !touch) drag = { key: k, x: e.clientX };
   });
-  window.addEventListener('pointerup', function () { drag = null; });
+  window.addEventListener('pointerup', function (e) {
+    var d = down; down = null; drag = null;
+    if (!d || !active) return;
+    var moved = Math.hypot(e.clientX - d.x, e.clientY - d.y);
+    if (moved > 10 || e.timeStamp - d.t > 500) return;
+    pointer(e); ray.setFromCamera(ndc, camera);
+    var k = pick();
+    if (k) choose(k);
+    else if (d.touch && selected) choose(selected);
+  });
+  window.addEventListener('pointercancel', function () { down = null; drag = null; });
 
   /* ---------- цикл ---------- */
   function resize() {
     var w = window.innerWidth, h = window.innerHeight;
     renderer.setSize(w, h, false);
     camera.aspect = w / h; camera.updateProjectionMatrix();
+    framing();
   }
   window.addEventListener('resize', resize); resize();
 

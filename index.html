@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Мёд в Астане — доставка по всему Казахстану</title>
 <meta name="description" content="Натуральный мёд с пасек. Продажа в Астане, доставка по всему Казахстану.">
 <meta name="theme-color" content="#0c0905">
@@ -30,14 +30,24 @@
       <li><button type="button" data-go="story">История</button></li>
       <li><button type="button" data-go="contact">Контакты</button></li>
     </ul>
+    <button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="mmenu">Меню</button>
   </nav>
 </header>
+<div class="mmenu" id="mmenu" aria-hidden="true">
+  <ul>
+    <li><button type="button" data-go="products">Купить</button></li>
+    <li><button type="button" data-go="story">История</button></li>
+    <li><button type="button" data-go="contact">Контакты</button></li>
+  </ul>
+  <div class="mmenu-foot"><a href="tel:+77000000000">+7 700 000 00 00</a><a href="mailto:info@med.kz">info@med.kz</a></div>
+</div>
 
 <div class="hero-fixed" id="hero">
   <canvas id="heroCanvas" aria-hidden="true"></canvas>
   <div class="hero-copy">
     <h1><span class="rv"><span>Настоящий мёд</span></span><span class="rv"><span>прямо с пасеки</span></span></h1>
     <p class="rv"><span>Продаём в Астане, доставляем по всему Казахстану. Нажмите на банку, чтобы рассмотреть её.</span></p>
+    <a class="hero-cta" href="#products" data-go="products">Выбрать мёд</a>
   </div>
   <a class="hero-chip" id="heroChip" href="#products" hidden><span id="heroChipName"></span><i>Смотреть</i></a>
   <div class="discover"><p>Листайте</p><span>↓</span></div>
@@ -107,6 +117,7 @@
       <h2>От первых ульев до вашего стола</h2>
       <div class="rule"></div>
     </div>
+    <div class="story-progress" aria-hidden="true"><span id="storyCount">1 / 5</span><div class="story-bar"><i id="storyBar"></i></div></div>
     <div class="story-track" id="track">
 <article class="chapter"><div class="chapter-grid">
   <div class="chapter-img"><img src="assets/story/1.svg" alt="С первых ульев" loading="eager"></div>

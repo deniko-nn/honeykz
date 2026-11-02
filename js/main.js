@@ -74,6 +74,7 @@
     var el = document.getElementById(id), st = pinOf(el);
     scrollToY(st ? st.start : el.getBoundingClientRect().top + window.scrollY, 1);
     header.classList.remove('is-open');
+    closeMenu();
   }
   function goProduct(i) {
     var st = pinOf(products);
@@ -83,6 +84,17 @@
 
   /* ---------- шапка ---------- */
   var header = $('#siteHeader'), hnav = $('#hnav'), logo = $('#logo');
+  var menuBtn = $('#menuBtn'), mmenu = $('#mmenu');
+  function setMenu(open) {
+    document.body.classList.toggle('menu-open', open);
+    menuBtn.setAttribute('aria-expanded', String(open));
+    mmenu.setAttribute('aria-hidden', String(!open));
+    menuBtn.textContent = open ? 'Закрыть' : 'Меню';
+  }
+  function closeMenu() { setMenu(false); }
+  menuBtn.addEventListener('click', function () { setMenu(!document.body.classList.contains('menu-open')); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeMenu(); });
+  window.addEventListener('resize', function () { if (window.innerWidth > 1023) closeMenu(); });
   function collapsed() { return header.classList.contains('is-collapsed'); }
   function onScroll() {
     var c = window.scrollY > 100;
@@ -152,31 +164,62 @@
   });
   mm.add('(max-width: 1023px), (max-height: 639px)', function () {
     products.classList.add('is-flow');
+    /* верх липкой карточки = высота экрана минус высота блока: нижний край упирается в низ экрана,
+       пока следующая карточка наезжает сверху */
+    function layout() {
+      panels.forEach(function (p) { p.style.setProperty('--stick', Math.min(0, window.innerHeight - p.offsetHeight) + 'px'); });
+    }
+    layout();
+    var ro = ('ResizeObserver' in window) ? new ResizeObserver(layout) : null;
+    if (ro) panels.forEach(function (p) { ro.observe(p); });
+    window.addEventListener('resize', layout);
+    ScrollTrigger.addEventListener('refresh', layout);
+    return function () {
+      if (ro) ro.disconnect();
+      window.removeEventListener('resize', layout);
+      ScrollTrigger.removeEventListener('refresh', layout);
+      panels.forEach(function (p) { p.style.removeProperty('--stick'); });
+    };
   });
 
   /* ---------- галерея: зум под курсором и миниатюры ---------- */
   panels.forEach(function (p) {
-    var zoom = $('.zoom', p), img = $('.zoom-img', p);
+    var zoom = $('.zoom', p), img = $('.zoom-img', p), thumbs = $$('.thumb', p), idx = 0;
+    function show(i) {
+      idx = (i + thumbs.length) % thumbs.length;
+      img.src = thumbs[idx].getAttribute('data-src');
+      thumbs.forEach(function (o, k) { o.classList.toggle('is-on', k === idx); });
+      if (!reduce && img.animate) img.animate([{ opacity: 0.2 }, { opacity: 1 }], { duration: 280, easing: 'ease-out' });
+    }
     zoom.addEventListener('mousemove', function (e) {
       var r = zoom.getBoundingClientRect();
       zoom.style.setProperty('--x', ((e.clientX - r.left) / r.width * 100) + '%');
       zoom.style.setProperty('--y', ((e.clientY - r.top) / r.height * 100) + '%');
     });
-    $$('.thumb', p).forEach(function (t) {
-      t.addEventListener('click', function () {
-        img.src = t.getAttribute('data-src');
-        $$('.thumb', p).forEach(function (o) { o.classList.toggle('is-on', o === t); });
-      });
-    });
+    thumbs.forEach(function (t, k) { t.addEventListener('click', function () { show(k); }); });
+    /* свайп по фото листает кадры */
+    var sx = null, sy = null;
+    zoom.addEventListener('touchstart', function (e) { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+    zoom.addEventListener('touchend', function (e) {
+      if (sx === null) return;
+      var dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.4) show(idx + (dx < 0 ? 1 : -1));
+      sx = null;
+    }, { passive: true });
   });
 
   /* ---------- история: горизонтальная прокрутка, главы встают ровно в окно ---------- */
+  var sBar = $('#storyBar'), sCount = $('#storyCount');
   gsap.to(track, {
     x: function () { return -(track.scrollWidth - root.clientWidth); }, ease: 'none',
     scrollTrigger: {
       trigger: '#story', start: 'top top',
       end: function () { return '+=' + (track.scrollWidth - root.clientWidth); },
       scrub: 1, pin: true, invalidateOnRefresh: true,
+      onUpdate: function (self) {
+        sBar.style.transform = 'scaleX(' + self.progress + ')';
+        sCount.textContent = (Math.round(self.progress * (chapterCount - 1)) + 1) + ' / ' + chapterCount;
+      },
       snap: reduce ? false : { snapTo: 1 / (chapterCount - 1), duration: { min: 0.2, max: 0.7 }, delay: 0.1, ease: 'power1.inOut' }
     }
   });
