@@ -52,7 +52,7 @@
   wrap.className = 'cart';
   wrap.innerHTML =
     '<div class="cart-backdrop" data-close></div>' +
-    '<aside class="cart-panel" role="dialog" aria-modal="true" aria-labelledby="cartTitle" tabindex="-1" aria-hidden="true">' +
+    '<aside class="cart-panel" data-lenis-prevent role="dialog" aria-modal="true" aria-labelledby="cartTitle" tabindex="-1" aria-hidden="true">' +
       '<header class="cart-head"><h2 id="cartTitle">Корзина</h2><button class="cart-x" type="button" data-close aria-label="Закрыть корзину"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg></button></header>' +
       '<div class="cart-body" id="cartBody"></div>' +
     '</aside>';

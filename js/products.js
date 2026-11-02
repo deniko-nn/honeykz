@@ -170,7 +170,7 @@
       (p.second ? '<p class="kz">' + esc(p.second) + '</p>' : '') +
       '<h2 class="name">' + esc(p.name) + '</h2>' +
       (p.desc ? '<p class="desc">' + esc(p.desc) + '</p>' : '') +
-      '<div class="details">' + (specs ? '<div class="specs">' + specs + '</div>' : '') + benefits +
+      '<div class="details" data-lenis-prevent>' + (specs ? '<div class="specs">' + specs + '</div>' : '') + benefits +
       (p.storage ? '<p class="usage"><b>Хранение:</b> ' + esc(p.storage) + '</p>' : '') + '</div>' +
       '<div class="buy-row">' + price + '<button class="more" type="button" aria-expanded="false">Подробнее</button><button class="buy" type="button" data-id="' + p.id + '">В корзину</button></div>' +
       '</div></div></article>';

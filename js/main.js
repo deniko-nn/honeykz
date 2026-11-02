@@ -72,6 +72,11 @@
   var dur = function (s) { return reduce ? 0.01 : s; };
   function pinOf(el) { return ScrollTrigger.getAll().filter(function (s) { return s.pin === el; })[0]; }
   function scrollToY(y, d, ease) {
+    /* при включённом Lenis переход делает он, чтобы не спорить с плавной прокруткой */
+    if (window.__lenis) {
+      window.__lenis.scrollTo(y, { duration: dur(d || 1.2), force: true, easing: function (t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; } });
+      return;
+    }
     gsap.killTweensOf(window);
     gsap.to(window, { duration: dur(d || 0.8), ease: ease || 'power3.out', scrollTo: { y: y, autoKill: false } });
   }
@@ -176,7 +181,7 @@
         end: function () { return '+=' + ((n - 1) * window.innerHeight); },
         scrub: true, pin: true, anticipatePin: 1,
         /* каждый блок «досаживается» в окно целиком, а не остаётся на полпути */
-        snap: reduce ? false : { snapTo: function (v) { return Math.round(v * (n - 1)) / (n - 1); }, directional: false, inertia: false, duration: { min: 0.25, max: 0.8 }, delay: 0.08, ease: 'power2.inOut' }
+        snap: (reduce || window.__lenis) ? false : { snapTo: function (v) { return Math.round(v * (n - 1)) / (n - 1); }, directional: false, inertia: false, duration: { min: 0.25, max: 0.8 }, delay: 0.08, ease: 'power2.inOut' }
       }
     });
     /* Магнит между главным экраном и мёдом: остановка «почти у блока» доезжает до блока,
@@ -185,7 +190,7 @@
     ScrollTrigger.create({
       start: 0,
       end: function () { return pin.start; },
-      snap: reduce ? false : {
+      snap: (reduce || window.__lenis) ? false : {
         snapTo: function (v, self) { return v < 0.12 ? 0 : v > 0.88 ? 1 : (self.direction > 0 ? 1 : 0); },
         inertia: false, duration: { min: 0.3, max: 0.8 }, delay: 0.08, ease: 'power2.inOut'
       }
@@ -296,9 +301,50 @@
         sBar.style.transform = 'scaleX(' + self.progress + ')';
         sCount.textContent = (Math.round(self.progress * (chapterCount - 1)) + 1) + ' / ' + chapterCount;
       },
-      snap: reduce ? false : { snapTo: 1 / (chapterCount - 1), duration: { min: 0.2, max: 0.7 }, delay: 0.1, ease: 'power1.inOut' }
+      snap: (reduce || window.__lenis) ? false : { snapTo: 1 / (chapterCount - 1), duration: { min: 0.2, max: 0.7 }, delay: 0.1, ease: 'power1.inOut' }
     }
   });
+
+  /* ---------- доводка до ближайшей карточки (Lenis) ----------
+     Когда прокрутка остановилась рядом с карточкой или главой, страница плавно докатывается до неё.
+     Это заменяет «магниты» ScrollTrigger, которые спорили бы с плавной прокруткой. */
+  (function () {
+    var lenis = window.__lenis;
+    if (!lenis || reduce) return;
+    function pins() { return ScrollTrigger.getAll().filter(function (t) { return t.pin; }); }
+    function points(y, dir) {
+      var all = pins(), prod = all.filter(function (t) { return t.pin === products; })[0];
+      var story = all.filter(function (t) { return t.pin === storySticky.parentElement || t.trigger === $('#story'); })[0];
+      var list = [];
+      if (prod) {
+        if (y < prod.start - 2) return [0, prod.start];                  // между главным экраном и мёдом
+        if (y <= prod.end + 2) { for (var i = 0; i < panels.length; i++) list.push(prod.start + i * (prod.end - prod.start) / Math.max(1, panels.length - 1)); return list; }
+      }
+      if (story && y >= story.start - 2 && y <= story.end + 2) {
+        for (var k = 0; k < chapterCount; k++) list.push(story.start + k * (story.end - story.start) / Math.max(1, chapterCount - 1));
+        return list;
+      }
+      return null;
+    }
+    var timer = 0, lastY = window.scrollY, dir = 1;
+    function settle() {
+      if (lenis.isScrolling) { timer = setTimeout(settle, 120); return; }
+      var y = window.scrollY, pts = points(y, dir);
+      if (!pts) return;
+      var best = pts[0];
+      if (pts.length === 2 && pts[0] === 0) {         // зона главного экрана: до 12% и после 88% решает близость, посередине — направление
+        var t = (y - pts[0]) / (pts[1] - pts[0]);
+        best = t < 0.12 ? pts[0] : t > 0.88 ? pts[1] : (dir > 0 ? pts[1] : pts[0]);
+      } else {
+        pts.forEach(function (v) { if (Math.abs(v - y) < Math.abs(best - y)) best = v; });
+      }
+      if (Math.abs(best - y) > 2) lenis.scrollTo(best, { duration: 0.75, force: false, easing: function (t) { return 1 - Math.pow(1 - t, 3); } });
+    }
+    window.addEventListener('scroll', function () {
+      var y = window.scrollY; if (y !== lastY) { dir = y > lastY ? 1 : -1; lastY = y; }
+      clearTimeout(timer); timer = setTimeout(settle, 140);
+    }, { passive: true });
+  })();
 
   /* ---------- форма: открывает письмо в почтовой программе ---------- */
   $('#contactForm').addEventListener('submit', function (e) {
