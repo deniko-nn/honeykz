@@ -174,8 +174,8 @@
       tl.to(panels[i], { yPercent: 0, borderTopLeftRadius: 0, borderTopRightRadius: 0, ease: 'none', duration: 1 }, i - 1);
       /* тень появляется, только когда карточка уже выезжает, а не ждёт под экраном */
       tl.to(panels[i], { '--sh': 1, ease: 'none', duration: 0.2 }, i - 1);
-      /* предыдущая чуть уменьшается и темнеет, уходя «вглубь» */
-      tl.to(panels[i - 1], { scale: 0.94, '--dim': 0.38, borderTopLeftRadius: 32, borderTopRightRadius: 32, transformOrigin: '50% 0%', ease: 'none', duration: 1 }, i - 1);
+      /* предыдущая чуть сдвигается вверх и темнеет, уходя «вглубь» (без масштабирования, чтобы текст оставался чётким) */
+      tl.to(panels[i - 1], { yPercent: -5, '--dim': 0.34, borderTopLeftRadius: 32, borderTopRightRadius: 32, ease: 'none', duration: 1 }, i - 1);
     }
   });
   mm.add('(max-width: 1023px), (max-height: 639px)', function () {
