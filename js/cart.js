@@ -45,8 +45,8 @@
   var btn = document.createElement('button');
   btn.className = 'cart-btn'; btn.type = 'button'; btn.setAttribute('aria-haspopup', 'dialog');
   btn.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.2 11.2a1.5 1.5 0 0 1-1.5 1.3H7.7a1.5 1.5 0 0 1-1.5-1.3z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg><span class="cart-btn-t">Корзина</span><b class="cart-n" aria-live="polite">0</b>';
-  var header = $('#siteHeader');
-  (header || document.body).appendChild(btn);
+  /* кнопка живёт внутри меню шапки, чтобы стоять с ним в одном ряду */
+  (document.getElementById('hnav') || document.getElementById('siteHeader') || document.body).appendChild(btn);
 
   var wrap = document.createElement('div');
   wrap.className = 'cart';

@@ -367,16 +367,22 @@ b { font-weight: 600; }
 
 /* ---------- корзина ---------- */
 .cart-btn {
-  position: absolute; top: 25px; right: var(--pad); z-index: 2; pointer-events: auto;
+  position: absolute; top: 1px; right: 0; z-index: 2; pointer-events: auto;
   display: inline-flex; align-items: center; gap: 9px; height: 44px; padding: 0 4px 0 2px;
   background: none; border: 0; color: inherit; font: 500 clamp(18px, 1.7vw, 24px)/1 var(--display); letter-spacing: .02em;
 }
 .cart-btn .cart-n { min-width: 22px; height: 22px; padding: 0 6px; display: inline-grid; place-items: center; border-radius: 999px; background: rgb(128 128 128 / .35); color: inherit; font: 600 12px/1 var(--text); font-variant-numeric: tabular-nums; }
 .cart-btn.has-items .cart-n { background: #f0b93f; color: #2a1a08; }
 .cart-btn:hover .cart-btn-t { text-decoration: underline; text-underline-offset: 4px; }
-@media (min-width: 1024px) { .hnav { padding-right: 190px; } .site-header.is-collapsed .hnav { padding-right: 0; } }
+@media (min-width: 1024px) {
+  /* в развёрнутой шапке корзина — последний пункт того же ряда, что и ссылки */
+  .cart-btn { position: static; align-self: center; margin-left: clamp(24px, 4.5vw, 72px); }
+  .links { margin-left: auto; }
+  /* в свёрнутой шапке посередине только логотип, корзина уходит вправо */
+  .site-header.is-collapsed .cart-btn { position: absolute; top: 1px; right: 0; margin: 0; }
+}
 @media (max-width: 1023px) {
-  .cart-btn { top: 10px; right: calc(max(var(--pad), env(safe-area-inset-right)) + 82px); }
+  .cart-btn { top: 10px; right: 82px; }
   .cart-btn-t { display: none; }
 }
 .cart { position: fixed; inset: 0; z-index: 120; pointer-events: none; }
