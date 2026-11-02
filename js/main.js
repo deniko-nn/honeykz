@@ -199,6 +199,18 @@
     products.classList.add('is-flow');
     /* верх липкой карточки = высота экрана минус высота блока: нижний край упирается в низ экрана,
        пока следующая карточка наезжает сверху */
+    /* Анимация наложения как на десктопе: пока следующая карточка наезжает, предыдущая темнеет
+       и чуть уходит вверх, а у наезжающей выпрямляются верхние углы. */
+    var fx = [];
+    panels.forEach(function (p, i) {
+      if (i === 0) return;
+      var prev = panels[i - 1];
+      var st = { trigger: p, start: 'top 98%', end: 'top 12%', scrub: true };
+      fx.push(gsap.fromTo(prev, { '--dim': 0, yPercent: 0 }, { '--dim': 0.4, yPercent: -3, ease: 'none', scrollTrigger: st }));
+      fx.push(gsap.fromTo(p, { '--sh': 0 }, { '--sh': 1, ease: 'none', scrollTrigger: { trigger: p, start: 'top 100%', end: 'top 70%', scrub: true } }));
+      fx.push(gsap.fromTo($('.gallery', p), { y: 36, opacity: 0.35 }, { y: 0, opacity: 1, ease: 'none', scrollTrigger: { trigger: p, start: 'top 92%', end: 'top 38%', scrub: true } }));
+      fx.push(gsap.fromTo($('.info', p), { y: 56, opacity: 0.2 }, { y: 0, opacity: 1, ease: 'none', scrollTrigger: { trigger: p, start: 'top 85%', end: 'top 30%', scrub: true } }));
+    });
     function layout() {
       panels.forEach(function (p) { p.style.setProperty('--stick', Math.min(0, window.innerHeight - p.offsetHeight) + 'px'); });
     }
@@ -212,6 +224,8 @@
       window.removeEventListener('resize', layout);
       ScrollTrigger.removeEventListener('refresh', layout);
       panels.forEach(function (p) { p.style.removeProperty('--stick'); });
+      fx.forEach(function (t) { if (t.scrollTrigger) t.scrollTrigger.kill(); t.kill(); });
+      panels.forEach(function (p) { p.style.removeProperty('--dim'); p.style.removeProperty('--sh'); p.style.transform = ''; });
     };
   });
 
