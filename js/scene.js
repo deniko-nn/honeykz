@@ -32,11 +32,15 @@ window.HeroScene = function (canvas, opts) {
   scene.add(floor);
 
   /* ---------- банки ---------- */
-  var defs = [
-    { key: 'tsvetochny', tone: '#e8a21e', x: -3.0, z: 0.5, s: 1.0, ry: 0.5 },
-    { key: 'gorny', tone: '#b8680f', x: 0.2, z: -0.7, s: 1.5, ry: 0, lid: 0x3a2a1a },
-    { key: 'lipovy', tone: '#eec25a', x: 3.4, z: 0.3, s: 1.05, ry: -0.55 }
+  /* Банки берутся из списка мёда (data/honey.js); запасной вариант — три банки по умолчанию. */
+  var list = (opts.jars && opts.jars.length) ? opts.jars : [
+    { key: 'a', tone: '#e8a21e' }, { key: 'b', tone: '#b8680f', lid: '#3a2a1a' }, { key: 'c', tone: '#eec25a' }
   ];
+  var count = list.length, mid = (count - 1) / 2, gap = count <= 3 ? 3.2 : 2.3;
+  var defs = list.map(function (j, i) {
+    var t = count === 1 ? 1 : count === 2 ? 0.6 : 1 - Math.abs(i - mid) / mid;
+    return { key: j.key, tone: j.tone, lid: j.lid, x: (i - mid) * gap, z: 0.4 - 1.1 * t, s: count === 1 ? 1.5 : 1.0 + 0.5 * t, ry: (mid - i) * 0.25 };
+  });
   var jars = {}, pickables = [];
   defs.forEach(function (d) {
     var g = Jar3D.create({ tone: d.tone, lid: d.lid });
@@ -54,8 +58,8 @@ window.HeroScene = function (canvas, opts) {
     var first = portrait === null;
     portrait = p;
     camera.fov = p ? 48 : 36;
-    baseX = p ? -0.1 : -2.7; baseY = p ? 2.4 : 2.1;
-    camera.position.z = p ? 16.5 : 14;
+    baseX = p ? -0.1 : (count > 3 ? -3.4 : -2.7); baseY = p ? 2.4 : 2.1;
+    camera.position.z = p ? 16.5 : (count > 3 ? 16.5 : 14);
     lookAt.set(baseX, p ? 0.1 : 1.0, 0);
     spread = p ? 0.56 : 1;
     Object.keys(jars).forEach(function (k) { jars[k].group.position.x = jars[k].x0 * spread; });

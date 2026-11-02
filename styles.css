@@ -118,6 +118,7 @@ b { font-weight: 600; }
 .usage b { color: var(--ink); }
 .buy-row { margin-top: clamp(14px, 2.6vh, 32px); display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
 .price { font: 500 clamp(34px, 3.2vw, 46px)/1 var(--display); font-variant-numeric: lining-nums tabular-nums; color: var(--accent); }
+.price s { font-size: .62em; opacity: .55; margin-right: 6px; }
 .price small { font: 400 13px/1 var(--text); color: rgba(0, 0, 0, .5); margin-left: 6px; }
 .buy { padding: 14px 30px; border: 0; border-radius: 999px; background: var(--accent); color: #fff; font-weight: 500; transition: filter .2s, transform .2s; }
 .buy:hover { filter: brightness(1.18); transform: translateY(-1px); }

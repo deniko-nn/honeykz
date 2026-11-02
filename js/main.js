@@ -27,7 +27,8 @@
 
   /* ---------- 3D главного экрана ---------- */
   var hero = null;
-  try { hero = HeroScene($('#heroCanvas'), { mobile: mobile, reduce: reduce }); }
+  var data = window.HoneyData || { heroJars: [], chipNames: {} };
+  try { hero = HeroScene($('#heroCanvas'), { mobile: mobile, reduce: reduce, jars: data.heroJars }); }
   catch (e) { root.classList.add('no-webgl'); }
 
   var panels = $$('.product');
@@ -131,12 +132,11 @@
     }
   });
 
-  var NAMES = { tsvetochny: 'Цветочный мёд', gorny: 'Горный мёд', lipovy: 'Липовый мёд' };
-  var ORDER = ['tsvetochny', 'gorny', 'lipovy'];
   var chip = $('#heroChip'), chipName = $('#heroChipName');
   if (hero) {
     hero.onSelect(function (k) {
-      if (k) { chipName.textContent = NAMES[k]; chip.dataset.idx = ORDER.indexOf(k); chip.hidden = false; }
+      var info = data.chipNames[k];
+      if (k && info) { chipName.textContent = info.name; chip.dataset.idx = info.index; chip.hidden = false; }
       else chip.hidden = true;
     });
   }
@@ -145,8 +145,9 @@
   /* ---------- продукты: карточки выезжают друг на друга ---------- */
   var mm = gsap.matchMedia();
   mm.add('(min-width: 1024px) and (min-height: 640px)', function () {
-    products.classList.remove('is-flow');
     var n = panels.length;
+    if (n < 2) { products.classList.add('is-flow'); return; }
+    products.classList.remove('is-flow');
     gsap.set(panels, { zIndex: function (i) { return i; }, '--dim': 0, '--sh': 0 });
     gsap.set(panels.slice(1), { yPercent: 100, borderTopLeftRadius: 40, borderTopRightRadius: 40 });
     var tl = gsap.timeline({
@@ -212,6 +213,7 @@
       zoom.style.setProperty('--x', ((e.clientX - r.left) / r.width * 100) + '%');
       zoom.style.setProperty('--y', ((e.clientY - r.top) / r.height * 100) + '%');
     });
+    if (thumbs.length < 2) return;
     thumbs.forEach(function (t, k) { t.addEventListener('click', function () { show(k); }); });
     /* свайп по фото листает кадры */
     var sx = null, sy = null;
