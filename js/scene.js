@@ -149,11 +149,12 @@ window.HeroScene = function (canvas, opts) {
   /* ---------- взаимодействие ---------- */
   var mouse = { x: 0, y: 0 }, ndc = new THREE.Vector2(), ray = new THREE.Raycaster();
   var target = new THREE.Vector3(0, 0.02, 1), smooth = new THREE.Vector3(0, 0.02, 1);
-  var selected = null, hovered = null, onSelect = function () {};
+  var selected = null, selTouch = false, leaveAt = 0, overChip = false, hovered = null, onSelect = function () {};
   var drag = null, active = true, running = false, raf = 0;
 
   function overUI(e) { return e.target && e.target.closest && e.target.closest('.site-header, .hero-chip, a, button, input, textarea'); }
   function pointer(e) {
+    overChip = !!(e.target && e.target.closest && e.target.closest('.hero-chip'));
     mouse.x = e.clientX / window.innerWidth - 0.5; mouse.y = e.clientY / window.innerHeight - 0.5;
     ndc.set(e.clientX / window.innerWidth * 2 - 1, -(e.clientY / window.innerHeight) * 2 + 1);
     if (drag) { jars[drag.key].rotTarget += (e.clientX - drag.x) * 0.012; drag.x = e.clientX; }
@@ -162,7 +163,7 @@ window.HeroScene = function (canvas, opts) {
     var hit = ray.intersectObjects(pickables, false);
     return hit.length ? hit[0].object.userData.key : null;
   }
-  function choose(k) {
+  function choose(k, touch) {
     if (selected && selected !== k) {
       gsap.to(jars[selected].group.position, { z: jars[selected].z0, duration: 0.8, ease: 'power2.out' });
       jars[selected].rotTarget = jars[selected].ry0;
@@ -170,7 +171,7 @@ window.HeroScene = function (canvas, opts) {
     if (k && k !== selected) {
       gsap.to(jars[k].group.position, { z: jars[k].z0 + (mobile ? 2.2 : 3.2), duration: 1, ease: 'power3.out' });
       jars[k].rotTarget = 0;
-      selected = k;
+      selected = k; selTouch = !!touch; leaveAt = 0;
     } else if (k === selected) {
       gsap.to(jars[k].group.position, { z: jars[k].z0, duration: 0.8, ease: 'power2.out' });
       jars[k].rotTarget = jars[k].ry0; selected = null;
@@ -193,9 +194,10 @@ window.HeroScene = function (canvas, opts) {
     if (moved > 10 || e.timeStamp - d.t > 500) return;
     pointer(e); ray.setFromCamera(ndc, camera);
     var k = pick();
-    if (k) choose(k);
+    if (k) choose(k, d.touch);
     else if (d.touch && selected) choose(selected);
   });
+  document.documentElement.addEventListener('mouseleave', function () { ndc.set(9, 9); overChip = false; });
   window.addEventListener('pointercancel', function () { down = null; drag = null; });
 
   /* ---------- цикл ---------- */
@@ -216,6 +218,14 @@ window.HeroScene = function (canvas, opts) {
     ray.setFromCamera(ndc, camera);
     hovered = pick();
     document.body.style.cursor = (active && hovered) ? (drag ? 'grabbing' : 'grab') : '';
+
+    /* Мышь: когда курсор ушёл с выбранной банки, она возвращается на место.
+       Небольшая пауза нужна, чтобы успеть дойти до плашки «Смотреть». */
+    if (selected && !selTouch) {
+      if (hovered === selected || overChip || drag) leaveAt = 0;
+      else if (!leaveAt) leaveAt = performance.now();
+      else if (performance.now() - leaveAt > 1200) { choose(selected); leaveAt = 0; }
+    }
 
     var fl = ray.intersectObject(floor, false);
     if (fl.length) target.copy(fl[0].point);

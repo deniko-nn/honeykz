@@ -123,14 +123,20 @@
   ScrollTrigger.create({ trigger: '#contact', start: 'top 50%', refreshPriority: -1, onEnter: light, onEnterBack: light, onLeaveBack: dark });
 
   /* ---------- главный экран: активен, пока он в кадре ---------- */
-  ScrollTrigger.create({
-    start: 0, end: function () { return window.innerHeight * 1.15; },
-    onToggle: function (self) {
-      if (!hero) return;
-      hero.setActive(self.isActive);
-      if (self.isActive) { if (finished) hero.start(); } else hero.stop();
-    }
-  });
+  /* Главный экран активен, пока он на виду. Считаем по позиции прокрутки, а не через ScrollTrigger:
+     у ScrollTrigger «активно» ложно ровно в верхней точке страницы, и после возврата наверх банки не отзывались. */
+  var heroOn = true;
+  function syncHero() {
+    if (!hero) return;
+    var on = window.scrollY < window.innerHeight * 1.15;
+    if (on === heroOn) return;
+    heroOn = on;
+    hero.setActive(on);
+    if (on) { if (finished) hero.start(); }
+    else { hero.deselect(); hero.stop(); }
+  }
+  window.addEventListener('scroll', syncHero, { passive: true });
+  window.addEventListener('resize', syncHero);
 
   var chip = $('#heroChip'), chipName = $('#heroChipName');
   if (hero) {
