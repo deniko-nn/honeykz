@@ -160,10 +160,14 @@
 
   /* ---------- продукты: карточки выезжают друг на друга ---------- */
   var mm = gsap.matchMedia();
-  mm.add('(min-width: 1024px) and (min-height: 640px)', function () {
+  /* Закреплённая стопка: компьютер и телефон в портрете. На телефоне карточка умещается в один экран
+     (is-compact), подробности открываются кнопкой «Подробнее». */
+  mm.add('(min-width: 1024px) and (min-height: 640px), (max-width: 767px) and (min-height: 560px)', function () {
     var n = panels.length;
     if (n < 2) { products.classList.add('is-flow'); return; }
     products.classList.remove('is-flow');
+    var compact = window.innerWidth < 768;
+    products.classList.toggle('is-compact', compact);
     gsap.set(panels, { zIndex: function (i) { return i; }, '--dim': 0, '--sh': 0 });
     gsap.set(panels.slice(1), { yPercent: 100, borderTopLeftRadius: 40, borderTopRightRadius: 40 });
     var tl = gsap.timeline({
@@ -172,7 +176,7 @@
         end: function () { return '+=' + ((n - 1) * window.innerHeight); },
         scrub: true, pin: true, anticipatePin: 1,
         /* каждый блок «досаживается» в окно целиком, а не остаётся на полпути */
-        snap: reduce ? false : { snapTo: 1 / (n - 1), duration: { min: 0.25, max: 0.8 }, delay: 0.08, ease: 'power2.inOut' }
+        snap: reduce ? false : { snapTo: function (v) { return Math.round(v * (n - 1)) / (n - 1); }, directional: false, inertia: false, duration: { min: 0.25, max: 0.8 }, delay: 0.08, ease: 'power2.inOut' }
       }
     });
     /* Магнит между главным экраном и мёдом: остановка «почти у блока» доезжает до блока,
@@ -183,7 +187,7 @@
       end: function () { return pin.start; },
       snap: reduce ? false : {
         snapTo: function (v, self) { return v < 0.12 ? 0 : v > 0.88 ? 1 : (self.direction > 0 ? 1 : 0); },
-        duration: { min: 0.3, max: 0.8 }, delay: 0.08, ease: 'power2.inOut'
+        inertia: false, duration: { min: 0.3, max: 0.8 }, delay: 0.08, ease: 'power2.inOut'
       }
     });
     for (var i = 1; i < n; i++) {
@@ -194,8 +198,27 @@
       /* предыдущая чуть сдвигается вверх и темнеет, уходя «вглубь» (без масштабирования, чтобы текст оставался чётким) */
       tl.to(panels[i - 1], { yPercent: -5, '--dim': 0.34, borderTopLeftRadius: 32, borderTopRightRadius: 32, ease: 'none', duration: 1 }, i - 1);
     }
+    return function () { products.classList.remove('is-compact'); closeSheets(); };
   });
-  mm.add('(max-width: 1023px), (max-height: 639px)', function () {
+
+  /* «Подробнее» на телефоне: нижняя шторка с характеристиками внутри карточки. */
+  function closeSheets() {
+    panels.forEach(function (p) {
+      p.classList.remove('is-more');
+      var m = $('.more', p); if (m) { m.setAttribute('aria-expanded', 'false'); m.textContent = 'Подробнее'; }
+    });
+  }
+  panels.forEach(function (p) {
+    var m = $('.more', p);
+    if (!m) return;
+    m.addEventListener('click', function () {
+      var open = !p.classList.contains('is-more');
+      closeSheets();
+      if (open) { p.classList.add('is-more'); m.setAttribute('aria-expanded', 'true'); m.textContent = 'Закрыть'; }
+    });
+  });
+  window.addEventListener('scroll', function () { if (document.querySelector('.product.is-more')) closeSheets(); }, { passive: true });
+  mm.add('(min-width: 768px) and (max-width: 1023px), (min-width: 1024px) and (max-height: 639px), (max-width: 767px) and (max-height: 559px)', function () {
     products.classList.add('is-flow');
     /* верх липкой карточки = высота экрана минус высота блока: нижний край упирается в низ экрана,
        пока следующая карточка наезжает сверху */

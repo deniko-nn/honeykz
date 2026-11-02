@@ -263,6 +263,40 @@ b { font-weight: 600; }
 .products.is-flow .price small { display: block; margin: 6px 0 0; }
 .products.is-flow .buy { min-width: 160px; height: 54px; padding: 0 28px; font-size: 17px; }
 
+/* ======================================================================
+   Телефон в портрете: карточки закреплены и наезжают друг на друга, как на компьютере.
+   Карточка умещается в экран; характеристики открываются шторкой «Подробнее».
+   ====================================================================== */
+.more { display: none; }
+.products.is-compact .product { padding: 0; }
+.products.is-compact .product-inner { flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 14px; height: 100%; padding: calc(70px + env(safe-area-inset-top)) max(var(--pad), env(safe-area-inset-left)) calc(112px + env(safe-area-inset-bottom)); }
+.products.is-compact .gallery, .products.is-compact .info { width: 100%; }
+.products.is-compact .zoom { height: clamp(140px, 29svh, 300px); aspect-ratio: auto; border-radius: 18px; touch-action: pan-y; }
+.products.is-compact .zoom:hover .zoom-img { transform: none; }
+.products.is-compact .thumbs { display: none; }
+.products.is-compact .tagline { font-size: 11px; }
+.products.is-compact .kz { font-size: clamp(24px, 7vw, 34px); margin-top: 4px; }
+.products.is-compact .name { font-size: clamp(46px, 15vw, 76px); }
+.products.is-compact .desc { margin-top: 8px; font-size: 15px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.products.is-compact .buy-row {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 4; margin: 0; flex-wrap: nowrap; gap: 12px; justify-content: space-between;
+  padding: 14px max(var(--pad), env(safe-area-inset-left)) calc(14px + env(safe-area-inset-bottom));
+  background: linear-gradient(0deg, var(--bg2) 70%, rgb(255 255 255 / 0));
+}
+.products.is-compact .price { white-space: nowrap; font-size: 32px; }
+.products.is-compact .price small { display: block; margin: 5px 0 0; }
+.products.is-compact .more { display: inline-flex; align-items: center; height: 48px; padding: 0 16px; margin-left: auto; background: none; border: 1px solid currentColor; border-radius: 999px; color: var(--accent); font: 500 15px/1 var(--text); }
+.products.is-compact .buy { min-width: 0; height: 48px; padding: 0 22px; font-size: 16px; }
+/* шторка с подробностями */
+.products.is-compact .details {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 3; max-height: 74%; overflow-y: auto; overscroll-behavior: contain;
+  padding: 26px max(var(--pad), env(safe-area-inset-left)) calc(100px + env(safe-area-inset-bottom));
+  background: var(--bg); border-radius: 24px 24px 0 0; box-shadow: 0 -14px 34px rgb(48 28 6 / .25);
+  transform: translateY(105%); visibility: hidden; transition: transform .4s cubic-bezier(.16, 1, .3, 1), visibility 0s linear .4s;
+}
+.products.is-compact .product.is-more .details { transform: none; visibility: visible; transition: transform .4s cubic-bezier(.16, 1, .3, 1); }
+.products.is-compact .details .specs { margin-top: 0; }
+
 /* планшет и широкое низкое окно: галерея и текст рядом */
 @media (min-width: 768px) {
   .products.is-flow .product-inner { flex-direction: row; align-items: flex-start; gap: 36px; }
