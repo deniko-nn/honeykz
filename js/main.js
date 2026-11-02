@@ -4,22 +4,29 @@
   var mobile = window.innerWidth < 768;
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var root = document.documentElement;
 
   gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
   ScrollTrigger.config({ ignoreMobileResize: true });
 
-  /* ---------- 3D: главный экран и облака точек ---------- */
+  /* Ширина окна без полосы прокрутки: 100vw её включает и сдвигает главы истории. */
+  var track = $('#track');
+  var chapterCount = $$('.chapter', track).length;
+  function setWidths() {
+    var w = root.clientWidth;
+    root.style.setProperty('--vw', w + 'px');
+    track.style.width = (w * chapterCount) + 'px';
+  }
+  setWidths();
+  ScrollTrigger.addEventListener('refreshInit', setWidths);
+
+  /* ---------- 3D главного экрана ---------- */
   var hero = null;
   try { hero = HeroScene($('#heroCanvas'), { mobile: mobile, reduce: reduce }); }
-  catch (e) { document.documentElement.classList.add('no-webgl'); }
+  catch (e) { root.classList.add('no-webgl'); }
 
   var panels = $$('.product');
   var products = $('#products');
-  var clouds = panels.map(function (el) {
-    try {
-      return HoneyCloud($('.cloud', el), { accent: getComputedStyle(el).getPropertyValue('--accent').trim(), mobile: mobile, reduce: reduce });
-    } catch (e) { return null; }
-  });
 
   /* ---------- загрузчик ---------- */
   var pre = $('#preloader'), countEl = $('#preCount'), fillEl = $('#dropFill');
@@ -51,6 +58,28 @@
     if (shown >= 1) finish(); else requestAnimationFrame(tick);
   }
   requestAnimationFrame(tick);
+  /* шрифты и картинки меняют высоту блоков, поэтому пересчитываем точки закрепления */
+  if (document.fonts) document.fonts.ready.then(function () { if (finished) ScrollTrigger.refresh(); });
+  window.addEventListener('load', function () { if (finished) ScrollTrigger.refresh(); });
+
+  /* ---------- прокрутка к блокам ---------- */
+  var dur = function (s) { return reduce ? 0.01 : s; };
+  function pinOf(el) { return ScrollTrigger.getAll().filter(function (s) { return s.pin === el; })[0]; }
+  function scrollToY(y, d, ease) {
+    gsap.killTweensOf(window);
+    gsap.to(window, { duration: dur(d || 0.8), ease: ease || 'power3.out', scrollTo: { y: y, autoKill: false } });
+  }
+  /* Закреплённый блок встаёт ровно к верхнему краю: прокручиваем к началу закрепления, без отступа. */
+  function go(id) {
+    var el = document.getElementById(id), st = pinOf(el);
+    scrollToY(st ? st.start : el.getBoundingClientRect().top + window.scrollY, 1);
+    header.classList.remove('is-open');
+  }
+  function goProduct(i) {
+    var st = pinOf(products);
+    if (st) scrollToY(st.start + i * (st.end - st.start) / Math.max(1, panels.length - 1), 1.2, 'power3.inOut');
+    else scrollToY(panels[i].getBoundingClientRect().top + window.scrollY, 1);
+  }
 
   /* ---------- шапка ---------- */
   var header = $('#siteHeader'), hnav = $('#hnav'), logo = $('#logo');
@@ -68,13 +97,6 @@
     if (collapsed()) header.classList.toggle('is-open');
     else scrollToY(0);
   });
-
-  function scrollToY(y) { gsap.killTweensOf(window); gsap.to(window, { duration: reduce ? 0.01 : 0.8, ease: 'power3.out', scrollTo: { y: y } }); }
-  function go(id) {
-    gsap.killTweensOf(window);
-    gsap.to(window, { duration: reduce ? 0.01 : 0.8, ease: 'power3.out', scrollTo: { y: '#' + id, offsetY: 80 } });
-    header.classList.remove('is-open');
-  }
   $$('[data-go]').forEach(function (b) { b.addEventListener('click', function () { go(b.getAttribute('data-go')); }); });
 
   function dark() { header.classList.add('is-dark'); }
@@ -101,55 +123,35 @@
       else chip.hidden = true;
     });
   }
-  function goProduct(i) {
-    var st = ScrollTrigger.getAll().filter(function (s) { return s.pin === products; })[0];
-    gsap.killTweensOf(window);
-    if (st) {
-      var y = st.start + i * (st.end - st.start) / Math.max(1, panels.length - 1);
-      gsap.to(window, { duration: reduce ? 0.01 : 1.2, ease: 'power3.inOut', scrollTo: { y: y } });
-    } else {
-      gsap.to(window, { duration: reduce ? 0.01 : 1, ease: 'power3.out', scrollTo: { y: panels[i], offsetY: 60 } });
-    }
-  }
   chip.addEventListener('click', function (e) { e.preventDefault(); goProduct(Number(chip.dataset.idx)); });
 
-  /* ---------- продукты: стопка выезжает друг на друга ---------- */
-  var activeIdx = -1;
-  function setActive(i) {
-    if (i === activeIdx) return;
-    activeIdx = i;
-    clouds.forEach(function (c, k) { if (!c) return; if (k === i) { c.scatter(); c.start(); } else c.stop(); });
-  }
-  function stopClouds() { activeIdx = -1; clouds.forEach(function (c) { if (c) c.stop(); }); }
-
+  /* ---------- продукты: карточки выезжают друг на друга ---------- */
   var mm = gsap.matchMedia();
   mm.add('(min-width: 1024px) and (min-height: 640px)', function () {
     products.classList.remove('is-flow');
-    gsap.set(panels, { zIndex: function (i) { return i; } });
-    gsap.set(panels.slice(1), { yPercent: 100 });
+    var n = panels.length;
+    gsap.set(panels, { zIndex: function (i) { return i; }, '--dim': 0, '--sh': 0 });
+    gsap.set(panels.slice(1), { yPercent: 100, borderTopLeftRadius: 40, borderTopRightRadius: 40 });
     var tl = gsap.timeline({
       scrollTrigger: {
         trigger: products, start: 'top top',
-        end: function () { return '+=' + ((panels.length - 1) * window.innerHeight); },
+        end: function () { return '+=' + ((n - 1) * window.innerHeight); },
         scrub: true, pin: true, anticipatePin: 1,
-        onUpdate: function (self) { setActive(Math.round(self.progress * (panels.length - 1))); }
+        /* каждый блок «досаживается» в окно целиком, а не остаётся на полпути */
+        snap: reduce ? false : { snapTo: 1 / (n - 1), duration: { min: 0.25, max: 0.8 }, delay: 0.08, ease: 'power2.inOut' }
       }
     });
-    panels.slice(1).forEach(function (p) { tl.to(p, { yPercent: 0, ease: 'none', duration: 1 }); });
-    ScrollTrigger.create({ trigger: products, start: 'top bottom', onEnter: function () { activeIdx = -1; setActive(0); }, onLeaveBack: stopClouds });
-    ScrollTrigger.create({ trigger: '#story', start: 'top bottom', onEnter: stopClouds, onLeaveBack: function () { activeIdx = -1; setActive(panels.length - 1); } });
-    return stopClouds;
+    for (var i = 1; i < n; i++) {
+      /* новая карточка поднимается и выпрямляет верхние углы */
+      tl.to(panels[i], { yPercent: 0, borderTopLeftRadius: 0, borderTopRightRadius: 0, ease: 'none', duration: 1 }, i - 1);
+      /* тень появляется, только когда карточка уже выезжает, а не ждёт под экраном */
+      tl.to(panels[i], { '--sh': 1, ease: 'none', duration: 0.2 }, i - 1);
+      /* предыдущая чуть уменьшается и темнеет, уходя «вглубь» */
+      tl.to(panels[i - 1], { scale: 0.94, '--dim': 0.38, borderTopLeftRadius: 32, borderTopRightRadius: 32, transformOrigin: '50% 0%', ease: 'none', duration: 1 }, i - 1);
+    }
   });
   mm.add('(max-width: 1023px), (max-height: 639px)', function () {
     products.classList.add('is-flow');
-    var io = new IntersectionObserver(function (es) {
-      es.forEach(function (en) {
-        var c = clouds[panels.indexOf(en.target)]; if (!c) return;
-        if (en.isIntersecting) { c.scatter(); c.start(); } else c.stop();
-      });
-    }, { threshold: 0.35 });
-    panels.forEach(function (p) { io.observe(p); });
-    return function () { io.disconnect(); stopClouds(); };
   });
 
   /* ---------- галерея: зум под курсором и миниатюры ---------- */
@@ -168,14 +170,14 @@
     });
   });
 
-  /* ---------- история: горизонтальная прокрутка с закреплением ---------- */
-  var track = $('#track');
+  /* ---------- история: горизонтальная прокрутка, главы встают ровно в окно ---------- */
   gsap.to(track, {
-    x: function () { return -(track.scrollWidth - window.innerWidth); }, ease: 'none',
+    x: function () { return -(track.scrollWidth - root.clientWidth); }, ease: 'none',
     scrollTrigger: {
       trigger: '#story', start: 'top top',
-      end: function () { return '+=' + (track.scrollWidth - window.innerWidth); },
-      scrub: 1, pin: true, invalidateOnRefresh: true
+      end: function () { return '+=' + (track.scrollWidth - root.clientWidth); },
+      scrub: 1, pin: true, invalidateOnRefresh: true,
+      snap: reduce ? false : { snapTo: 1 / (chapterCount - 1), duration: { min: 0.2, max: 0.7 }, delay: 0.1, ease: 'power1.inOut' }
     }
   });
 

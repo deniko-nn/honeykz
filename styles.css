@@ -16,7 +16,7 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
+html { -webkit-text-size-adjust: 100%; scrollbar-gutter: stable; background: var(--ink); }
 body { margin: 0; background: var(--ink); color: var(--ink); font: 400 16px/1.6 var(--text); letter-spacing: .02em; -webkit-font-smoothing: antialiased; }
 body.is-loading { overflow: hidden; }
 h1, h2, h3, p, ul, dl, dd, figure { margin: 0; padding: 0; }
@@ -81,10 +81,13 @@ img { display: block; max-width: 100%; }
 main { position: relative; z-index: 2; }
 
 /* ---------- продукты: стопка, выезжающая при скролле ---------- */
-.products { position: relative; height: 100vh; overflow: hidden; background: var(--paper); }
-.product { position: absolute; inset: 0; background: var(--paper); color: var(--accent); overflow: hidden; }
-.cloud { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
-.cloud canvas { display: block; width: 100%; height: 100%; }
+.products { position: relative; height: 100vh; overflow: hidden; background: #1a120a; }
+.product {
+  --dim: 0; --sh: 0; position: absolute; inset: 0; color: var(--accent); overflow: hidden;
+  background: linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
+  box-shadow: 0 -28px 70px rgb(48 28 6 / calc(var(--sh) * .3)); will-change: transform;
+}
+.product::after { content: ""; position: absolute; inset: 0; z-index: 5; background: #2a1a08; opacity: var(--dim); pointer-events: none; }
 .product-inner { position: relative; z-index: 2; height: 100%; display: flex; align-items: center; justify-content: center; gap: clamp(24px, 4vw, 64px); padding: 0 var(--pad); }
 .gallery { width: 45%; flex: none; }
 .zoom { height: min(520px, 62vh); border-radius: 16px; overflow: hidden; background: #efe6d3; position: relative; }
@@ -117,7 +120,7 @@ b { font-weight: 600; }
 
 /* режим без закрепления (телефон и низкие экраны): секции идут друг за другом */
 .products.is-flow { height: auto; overflow: visible; }
-.products.is-flow .product { position: relative; inset: auto; min-height: 100vh; padding: 72px 0; }
+.products.is-flow .product { position: relative; inset: auto; min-height: 100vh; padding: 72px 0; box-shadow: none; }
 .products.is-flow .product-inner { flex-direction: column; align-items: stretch; height: auto; gap: 28px; }
 .products.is-flow .gallery, .products.is-flow .info { width: 100%; }
 .products.is-flow .zoom { height: min(380px, 56vw); }
@@ -130,8 +133,8 @@ b { font-weight: 600; }
 .kicker { font-size: 13px; letter-spacing: .6em; text-transform: uppercase; color: rgba(0, 0, 0, .5); }
 .story-head h2 { margin-top: 14px; font: 400 clamp(26px, 4.2vw, 64px)/1.1 var(--display); letter-spacing: -.005em; }
 .rule { height: 1px; background: rgba(0, 0, 0, .1); margin-top: 16px; }
-.story-track { display: flex; height: 100%; width: 500vw; }
-.chapter { width: 100vw; height: 100vh; flex: none; display: flex; align-items: center; padding: 96px var(--pad) 0; }
+.story-track { display: flex; height: 100%; width: calc(var(--vw, 100vw) * 5); }
+.chapter { width: var(--vw, 100vw); height: 100vh; flex: none; display: flex; align-items: center; padding: 96px var(--pad) 0; }
 .chapter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; width: 100%; max-width: 1400px; margin: 0 auto; }
 .chapter-img img { width: 100%; height: min(500px, 56vh); object-fit: cover; border-radius: 32px; }
 .chapter-text { position: relative; }
