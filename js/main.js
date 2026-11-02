@@ -214,7 +214,12 @@
     m.addEventListener('click', function () {
       var open = !p.classList.contains('is-more');
       closeSheets();
-      if (open) { p.classList.add('is-more'); m.setAttribute('aria-expanded', 'true'); m.textContent = 'Закрыть'; }
+      if (open) {
+        /* шторка начинается под строкой с ценой и кнопками, чтобы их не перекрывать */
+        var row = $('.buy-row', p), sheet = $('.details', p);
+        if (row && sheet) sheet.style.top = (row.offsetTop + row.offsetHeight + 14) + 'px';
+        p.classList.add('is-more'); m.setAttribute('aria-expanded', 'true'); m.textContent = 'Закрыть';
+      }
     });
   });
   window.addEventListener('scroll', function () { if (document.querySelector('.product.is-more')) closeSheets(); }, { passive: true });
