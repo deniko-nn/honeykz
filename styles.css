@@ -17,8 +17,21 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; -webkit-tap-highlight-color: transparent; background: var(--ink); scrollbar-width: none; }
-html::-webkit-scrollbar { display: none; }
+html { -webkit-text-size-adjust: 100%; -webkit-tap-highlight-color: transparent; background: var(--ink); }
+
+/* ---------- браузерная полоса прокрутки в виде пчелиных сот ----------
+   Трек: контуры сот. Ползунок: соты, залитые мёдом. Работает в Chrome, Edge, Safari и Opera;
+   Firefox не умеет рисовать узор на полосе, поэтому там она просто медового цвета. */
+@supports selector(::-webkit-scrollbar) {
+  ::-webkit-scrollbar { width: 16px; height: 16px; background: #1a120a; }
+  ::-webkit-scrollbar-track { background-color: #1a120a; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13.86' height='24.00' viewBox='0 0 13.86 24.00'%3E%3Cpolygon points='13.25%2C11.65 6.93%2C15.30 0.61%2C11.65 0.61%2C4.35 6.93%2C0.70 13.25%2C4.35' fill='none' fill-opacity='0' stroke='%23f0b93f' stroke-opacity='.4' stroke-width='1'/%3E%3Cpolygon points='6.32%2C23.65 0.00%2C27.30 -6.32%2C23.65 -6.32%2C16.35 -0.00%2C12.70 6.32%2C16.35' fill='none' fill-opacity='0' stroke='%23f0b93f' stroke-opacity='.4' stroke-width='1'/%3E%3Cpolygon points='20.18%2C23.65 13.86%2C27.30 7.53%2C23.65 7.53%2C16.35 13.86%2C12.70 20.18%2C16.35' fill='none' fill-opacity='0' stroke='%23f0b93f' stroke-opacity='.4' stroke-width='1'/%3E%3C/svg%3E"); background-size: 13.86px 24px; background-position: center top; }
+  ::-webkit-scrollbar-thumb { background-color: #f0b93f; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13.86' height='24.00' viewBox='0 0 13.86 24.00'%3E%3Cpolygon points='13.86%2C12.00 6.93%2C16.00 -0.00%2C12.00 0.00%2C4.00 6.93%2C0.00 13.86%2C4.00' fill='none' stroke='%236b3a12' stroke-opacity='.85' stroke-width='1.2' stroke-linejoin='round'/%3E%3Cpolygon points='6.93%2C24.00 0.00%2C28.00 -6.93%2C24.00 -6.93%2C16.00 -0.00%2C12.00 6.93%2C16.00' fill='none' stroke='%236b3a12' stroke-opacity='.85' stroke-width='1.2' stroke-linejoin='round'/%3E%3Cpolygon points='20.78%2C24.00 13.86%2C28.00 6.93%2C24.00 6.93%2C16.00 13.86%2C12.00 20.78%2C16.00' fill='none' stroke='%236b3a12' stroke-opacity='.85' stroke-width='1.2' stroke-linejoin='round'/%3E%3C/svg%3E"); background-size: 13.86px 24px; background-position: center top; border-left: 1px solid #1a120a; border-right: 1px solid #1a120a; min-height: 48px; }
+  ::-webkit-scrollbar-thumb:hover { filter: brightness(1.12); }
+  ::-webkit-scrollbar-corner { background: #1a120a; }
+}
+@supports not selector(::-webkit-scrollbar) {
+  html { scrollbar-color: #f0b93f #1a120a; scrollbar-width: auto; }
+}
 body { margin: 0; background: var(--ink); color: var(--ink); font: 400 16px/1.6 var(--text); letter-spacing: .005em; font-variant-numeric: lining-nums; -webkit-font-smoothing: antialiased; }
 body.is-loading { overflow: hidden; }
 h1, h2, h3, p, ul, dl, dd, figure { margin: 0; padding: 0; }
@@ -316,23 +329,6 @@ b { font-weight: 600; }
   .chapter-img img { height: 34vh; height: 34svh; }
   .story-head h2 { font-size: 26px; }
 }
-
-/* ---------- полоса прокрутки в виде сот (js/comb-scroll.js); родная полоса скрыта ---------- */
-#comb-scroll {
-  --comb-line: rgb(255 255 255 / .42); --comb-fill: #f0b93f; --comb-hot: #ffe08a;
-  position: fixed; z-index: 72; top: 50%; transform: translateY(-50%);
-  right: max(7px, env(safe-area-inset-right)); height: min(62vh, 440px);
-  cursor: pointer; touch-action: none; user-select: none; -webkit-user-select: none;
-}
-#comb-scroll[data-pot-theme="light"] { --comb-line: rgb(60 40 10 / .38); --comb-fill: #d68a1f; --comb-hot: #8a4b08; }
-#comb-scroll svg { display: block; width: 100%; height: 100%; overflow: visible; }
-#comb-scroll polygon { fill: var(--comb-fill); fill-opacity: 0; stroke: var(--comb-line); stroke-width: 1; vector-effect: non-scaling-stroke; stroke-linejoin: round; transition: stroke .3s; }
-#comb-scroll polygon.is-now { stroke: var(--comb-hot); stroke-width: 1.6; }
-#comb-scroll:hover polygon, #comb-scroll.is-drag polygon { stroke-width: 1.4; }
-#comb-scroll:hover polygon.is-now, #comb-scroll.is-drag polygon.is-now { stroke-width: 2; }
-/* на сенсорных экранах лента только показывает прогресс */
-@media (pointer: coarse) { #comb-scroll { pointer-events: none; } }
-@media (max-width: 767px) { #comb-scroll { height: min(40vh, 280px); right: max(4px, env(safe-area-inset-right)); } }
 
 /* ---------- горшок с мёдом в углу: раскрывается по мере прокрутки ---------- */
 #honey-pot {
