@@ -153,6 +153,17 @@
         snap: reduce ? false : { snapTo: 1 / (n - 1), duration: { min: 0.25, max: 0.8 }, delay: 0.08, ease: 'power2.inOut' }
       }
     });
+    /* Магнит между главным экраном и мёдом: остановка «почти у блока» доезжает до блока,
+       иначе сверху остаётся полоса главного экрана, пока не прокрутишь ещё. */
+    var pin = tl.scrollTrigger;
+    ScrollTrigger.create({
+      start: 0,
+      end: function () { return pin.start; },
+      snap: reduce ? false : {
+        snapTo: function (v, self) { return v < 0.12 ? 0 : v > 0.88 ? 1 : (self.direction > 0 ? 1 : 0); },
+        duration: { min: 0.3, max: 0.8 }, delay: 0.08, ease: 'power2.inOut'
+      }
+    });
     for (var i = 1; i < n; i++) {
       /* новая карточка поднимается и выпрямляет верхние углы */
       tl.to(panels[i], { yPercent: 0, borderTopLeftRadius: 0, borderTopRightRadius: 0, ease: 'none', duration: 1 }, i - 1);

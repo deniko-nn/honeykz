@@ -89,7 +89,7 @@ main { position: relative; z-index: 2; }
 .product {
   --dim: 0; --sh: 0; position: absolute; inset: 0; color: var(--accent); overflow: hidden;
   background: linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
-  box-shadow: 0 -28px 70px rgb(48 28 6 / calc(var(--sh) * .3)); will-change: transform;
+  box-shadow: 0 -34px 90px rgb(48 28 6 / calc(var(--sh) * .42)), inset 0 1px 0 rgb(255 255 255 / calc(var(--sh) * .85)); will-change: transform;
 }
 .product::after { content: ""; position: absolute; inset: 0; z-index: 5; background: #2a1a08; opacity: var(--dim); pointer-events: none; }
 .product-inner { position: relative; z-index: 2; height: 100%; display: flex; align-items: center; justify-content: center; gap: clamp(24px, 4vw, 64px); padding: 0 var(--pad); }
