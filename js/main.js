@@ -118,8 +118,8 @@
   $$('[data-go]').forEach(function (b) { b.addEventListener('click', function () { go(b.getAttribute('data-go')); }); });
 
   /* Цвет шапки и горшка зависит от участка: на светлых блоках тёмные линии, на тёмных — светлые. */
-  var potEl = document.getElementById('honey-pot');
-  function potTheme(onLight) { if (potEl) potEl.setAttribute('data-pot-theme', onLight ? 'light' : 'dark'); }
+  var themed = [document.getElementById('honey-pot'), document.getElementById('comb-scroll')];
+  function potTheme(onLight) { themed.forEach(function (el) { if (el) el.setAttribute('data-pot-theme', onLight ? 'light' : 'dark'); }); }
   function dark() { header.classList.add('is-dark'); potTheme(true); }
   function light() { header.classList.remove('is-dark'); potTheme(false); }
   ScrollTrigger.create({ trigger: '#products', start: 'top 20%', refreshPriority: -1, onEnter: dark, onEnterBack: dark, onLeaveBack: light });
