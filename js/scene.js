@@ -39,17 +39,21 @@ window.HeroScene = function (canvas, opts) {
   var count = list.length, mid = (count - 1) / 2, gap = count <= 3 ? 3.2 : 2.3;
   var defs = list.map(function (j, i) {
     var t = count === 1 ? 1 : count === 2 ? 0.6 : 1 - Math.abs(i - mid) / mid;
-    return { key: j.key, tone: j.tone, lid: j.lid, x: (i - mid) * gap, z: 0.4 - 1.1 * t, s: count === 1 ? 1.5 : 1.0 + 0.5 * t, ry: (mid - i) * 0.25 };
+    return { key: j.key, tone: j.tone, lid: j.lid, label: j.label, x: (i - mid) * gap, z: 0.4 - 1.1 * t, s: count === 1 ? 1.5 : 1.0 + 0.5 * t, ry: (mid - i) * 0.25 };
   });
   var jars = {}, pickables = [];
   defs.forEach(function (d) {
-    var g = Jar3D.create({ tone: d.tone, lid: d.lid });
+    var g = Jar3D.create({ tone: d.tone, lid: d.lid, label: d.label });
     g.scale.setScalar(d.s);
     g.position.set(d.x * spread, 0, d.z);
     g.rotation.y = d.ry;
     g.traverse(function (m) { if (m.isMesh) { m.userData.key = d.key; pickables.push(m); } });
     scene.add(g);
     jars[d.key] = { group: g, x0: d.x, z0: d.z, ry0: d.ry, rotTarget: d.ry, hover: 0 };
+  });
+
+  Jar3D.fontsReady(function () {
+    Object.keys(jars).forEach(function (k) { if (jars[k].group.userData.redrawLabel) jars[k].group.userData.redrawLabel(); });
   });
 
   function framing() {

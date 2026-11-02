@@ -18,26 +18,55 @@ window.Jar3D = (function () {
     return pts;
   }
 
-  function labelTexture(ink) {
-    var c = document.createElement('canvas'); c.width = 512; c.height = 180;
-    var x = c.getContext('2d');
-    x.fillStyle = '#f6eeda'; x.fillRect(0, 0, 512, 180);
-    x.strokeStyle = ink; x.globalAlpha = 0.5; x.lineWidth = 1.5; x.strokeRect(10, 10, 492, 160);
-    x.globalAlpha = 1; x.lineWidth = 3;
+  /* Рисуем этикетку на canvas. Если задан title, на ней название и подпись, иначе просто эмблема. */
+  function hexPath(x, cx, cy, r) {
     x.beginPath();
-    for (var i = 0; i < 6; i++) {
-      var a = Math.PI / 180 * (60 * i + 30);
-      x[i ? 'lineTo' : 'moveTo'](256 + 30 * Math.cos(a), 66 + 30 * Math.sin(a));
+    for (var i = 0; i < 6; i++) { var a = Math.PI / 180 * (60 * i + 30); x[i ? 'lineTo' : 'moveTo'](cx + r * Math.cos(a), cy + r * Math.sin(a)); }
+    x.closePath();
+  }
+  function drawLabel(c, o) {
+    var x = c.getContext('2d'), W = c.width, H = c.height, ink = o.ink || '#2a2218';
+    x.clearRect(0, 0, W, H);
+    x.fillStyle = o.bg || '#f6eeda'; x.fillRect(0, 0, W, H);
+    x.strokeStyle = ink; x.globalAlpha = 0.5; x.lineWidth = 1.5; x.strokeRect(10, 10, W - 20, H - 20);
+    x.globalAlpha = 1; x.lineWidth = 3;
+    if (o.title) {
+      hexPath(x, W / 2, 40, 14, ink); x.lineWidth = 2.5; x.stroke();
+      var fs = 66;
+      x.font = '600 ' + fs + 'px "Cormorant Garamond", Georgia, serif';
+      while (x.measureText(o.title).width > W - 96 && fs > 24) { fs -= 2; x.font = '600 ' + fs + 'px "Cormorant Garamond", Georgia, serif'; }
+      x.fillStyle = ink; x.textAlign = 'center'; x.textBaseline = 'alphabetic';
+      x.fillText(o.title, W / 2, 112);
+      if (o.sub) {
+        x.globalAlpha = 0.7; x.font = '500 15px Onest, system-ui, sans-serif';
+        if ('letterSpacing' in x) x.letterSpacing = '3px';
+        x.fillText(String(o.sub).toUpperCase(), W / 2, 152);
+        if ('letterSpacing' in x) x.letterSpacing = '0px';
+        x.globalAlpha = 1;
+      }
+    } else {
+      hexPath(x, W / 2, 66, 30, ink); x.stroke();
+      x.lineWidth = 4; x.beginPath(); x.moveTo(190, 124); x.lineTo(322, 124); x.stroke();
+      x.lineWidth = 2; x.globalAlpha = 0.7; x.beginPath(); x.moveTo(218, 146); x.lineTo(294, 146); x.stroke();
+      x.globalAlpha = 1;
     }
-    x.closePath(); x.stroke();
-    x.lineWidth = 4; x.beginPath(); x.moveTo(190, 124); x.lineTo(322, 124); x.stroke();
-    x.lineWidth = 2; x.globalAlpha = 0.7; x.beginPath(); x.moveTo(218, 146); x.lineTo(294, 146); x.stroke();
+  }
+  function labelTexture(o) {
+    var c = document.createElement('canvas'); c.width = 512; c.height = 180;
+    drawLabel(c, o);
     var t = new THREE.CanvasTexture(c);
     t.encoding = THREE.sRGBEncoding; t.anisotropy = 4;
+    t.userData = { redraw: function () { drawLabel(c, o); t.needsUpdate = true; } };
     return t;
   }
+  /* Шрифты подгружаются не сразу: после загрузки перерисовываем этикетки. */
+  function fontsReady(fn) {
+    if (document.fonts && document.fonts.load) {
+      Promise.all([document.fonts.load('600 40px "Cormorant Garamond"'), document.fonts.load('500 15px Onest')]).then(fn, fn);
+    } else fn();
+  }
 
-  /** o: { tone, lid, ink } */
+  /** o: { tone, lid, label: { title, sub, bg, ink } } */
   function create(o) {
     var g = new THREE.Group();
     var tone = new THREE.Color(o.tone);
@@ -56,14 +85,16 @@ window.Jar3D = (function () {
     var rim = new THREE.Mesh(new THREE.TorusGeometry(0.62, 0.026, 10, 64), lidMat);
     rim.rotation.x = Math.PI / 2; rim.position.y = 2.26;
 
+    var labelTex = labelTexture(o.label || {});
     var label = new THREE.Mesh(
       new THREE.CylinderGeometry(R + 0.012, R + 0.012, 0.9, 72, 1, true, -Math.PI * 0.4, Math.PI * 0.8),
-      new THREE.MeshStandardMaterial({ map: labelTexture(o.ink || '#2a2218'), roughness: 0.75, side: THREE.DoubleSide })
+      new THREE.MeshStandardMaterial({ map: labelTex, roughness: 0.75, side: THREE.DoubleSide })
     );
     label.position.y = 1.0;
 
     g.add(body, lid, rim, label);
     g.userData.height = 2.67;
+    g.userData.redrawLabel = labelTex.userData.redraw;
     return g;
   }
 
@@ -118,5 +149,5 @@ window.Jar3D = (function () {
     return tex;
   }
 
-  return { create: create, sample: sample, makeEnv: makeEnv };
+  return { create: create, sample: sample, makeEnv: makeEnv, fontsReady: fontsReady };
 })();
