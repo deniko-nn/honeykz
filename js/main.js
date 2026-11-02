@@ -12,13 +12,18 @@
   /* Ширина окна без полосы прокрутки: 100vw её включает и сдвигает главы истории. */
   var track = $('#track');
   var chapterCount = $$('.chapter', track).length;
+  var storyHead = $('.story-head'), storySticky = $('.story-sticky');
+  function setHead() { storySticky.style.setProperty('--head', storyHead.offsetHeight + 'px'); }
   function setWidths() {
+    setHead();
     var w = root.clientWidth;
     root.style.setProperty('--vw', w + 'px');
     track.style.width = (w * chapterCount) + 'px';
   }
   setWidths();
   ScrollTrigger.addEventListener('refreshInit', setWidths);
+  if ('ResizeObserver' in window) new ResizeObserver(setHead).observe(storyHead);
+  if (document.fonts) document.fonts.ready.then(setHead);
 
   /* ---------- 3D главного экрана ---------- */
   var hero = null;

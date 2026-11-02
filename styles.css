@@ -125,23 +125,24 @@ b { font-weight: 600; }
 /* ---------- история: горизонтальная прокрутка ---------- */
 .story { position: relative; background: var(--paper); color: var(--ink); }
 .story-sticky { position: relative; height: 100vh; height: 100svh; overflow: hidden; }
-.story-head { position: absolute; top: 0; left: 0; width: 100%; z-index: 20; padding: 48px var(--pad) 0; background: linear-gradient(var(--paper) 72%, rgba(255, 253, 248, 0)); }
+.story-head { position: absolute; top: 0; left: 0; width: 100%; z-index: 20; padding: clamp(76px, 10vh, 100px) var(--pad) 0; background: var(--paper); }
 .kicker { font-size: 13px; letter-spacing: .6em; text-transform: uppercase; color: rgba(0, 0, 0, .5); }
-.story-head h2 { margin-top: 12px; font: 500 clamp(34px, 5vw, 80px)/1 var(--display); letter-spacing: -.015em; }
+.story-head h2 { margin-top: 10px; font: 500 clamp(30px, min(5vw, 8.2vh), 80px)/1 var(--display); letter-spacing: -.015em; }
 .rule { height: 1px; background: rgba(0, 0, 0, .1); margin-top: 16px; }
 .story-track { display: flex; height: 100%; width: calc(var(--vw, 100vw) * 5); }
 .story-progress { position: absolute; left: var(--pad); right: var(--pad); bottom: calc(24px + env(safe-area-inset-bottom)); z-index: 20; display: flex; align-items: center; gap: 16px; font: 500 13px/1 var(--text); letter-spacing: .12em; color: rgba(0, 0, 0, .55); font-variant-numeric: tabular-nums; }
 .story-bar { flex: 1; height: 2px; background: rgba(0, 0, 0, .1); }
 .story-bar i { display: block; height: 100%; background: var(--ink); transform-origin: left; transform: scaleX(0); }
-.chapter { width: var(--vw, 100vw); height: 100vh; height: 100svh; flex: none; display: flex; align-items: center; padding: 96px var(--pad) 0; }
+/* верх содержимого главы = реальная высота заголовка (--head, ставит JS) + зазор */
+.chapter { width: var(--vw, 100vw); height: 100vh; height: 100svh; flex: none; display: flex; align-items: center; align-items: safe center; padding: calc(var(--head, 160px) + 28px) var(--pad) 76px; }
 .chapter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; width: 100%; max-width: 1400px; margin: 0 auto; }
-.chapter-img img { width: 100%; height: min(500px, 56vh); object-fit: cover; border-radius: 32px; }
+.chapter-img img { width: 100%; height: clamp(120px, 50vh, 500px); height: clamp(120px, 50svh, 500px); object-fit: cover; border-radius: 32px; }
 .chapter-text { position: relative; }
-.big-n { position: absolute; top: -.6em; left: -.04em; font: 500 clamp(130px, 15vw, 220px)/1 var(--display); color: rgba(0, 0, 0, .05); user-select: none; pointer-events: none; }
-.year { position: relative; font-size: 13px; letter-spacing: .4em; text-transform: uppercase; color: rgba(0, 0, 0, .5); }
-.chapter h3 { position: relative; margin-top: 12px; font: 500 clamp(42px, 5.8vw, 96px)/.98 var(--display); letter-spacing: -.015em; }
-.chapter-desc { position: relative; margin-top: 28px; max-width: 30em; font-size: clamp(15px, 1.3vw, 18px); color: rgba(0, 0, 0, .62); letter-spacing: .06em; }
-.chapter-line { position: relative; margin-top: 32px; display: flex; align-items: center; gap: 16px; font-size: 13px; letter-spacing: .2em; text-transform: uppercase; color: rgba(0, 0, 0, .5); }
+.big-n { position: absolute; top: 50%; right: -.02em; left: auto; transform: translateY(-52%); z-index: 0; font: 500 clamp(110px, min(15vw, 24vh), 220px)/1 var(--display); color: rgba(0, 0, 0, .05); user-select: none; pointer-events: none; }
+.year { position: relative; z-index: 1; font-size: 13px; letter-spacing: .4em; text-transform: uppercase; color: rgba(0, 0, 0, .5); }
+.chapter h3 { position: relative; z-index: 1; margin-top: 12px; font: 500 clamp(36px, min(5.8vw, 9.4vh), 96px)/.98 var(--display); letter-spacing: -.015em; }
+.chapter-desc { position: relative; z-index: 1; margin-top: clamp(14px, 3vh, 28px); max-width: 30em; font-size: clamp(15px, 1.3vw, 18px); color: rgba(0, 0, 0, .62); letter-spacing: .06em; }
+.chapter-line { position: relative; z-index: 1; margin-top: clamp(14px, 3.4vh, 32px); display: flex; align-items: center; gap: 16px; font-size: 13px; letter-spacing: .2em; text-transform: uppercase; color: rgba(0, 0, 0, .5); }
 .chapter-line i { width: 48px; height: 1px; background: rgba(0, 0, 0, .3); }
 
 /* ---------- контакты ---------- */
@@ -206,58 +207,67 @@ b { font-weight: 600; }
   .discover { display: none; }
   .hero-chip { left: max(var(--pad), env(safe-area-inset-left)); right: auto; bottom: calc(190px + env(safe-area-inset-bottom)); }
 
-  /* продукты: липкие карточки. Верх каждой подбирается в JS так, чтобы нижний край блока
-     упирался в низ экрана, пока следующая карточка наезжает сверху. */
-  .products.is-flow { height: auto; overflow: visible; background: var(--ink); }
-  .products.is-flow .product {
-    position: sticky; top: var(--stick, 0px); inset: auto; min-height: 0; overflow: visible;
-    padding: 96px 0 40px; border-radius: 30px 30px 0 0; box-shadow: 0 -24px 60px rgb(48 28 6 / .26);
-  }
-  .products.is-flow .product:first-child { border-radius: 0; box-shadow: none; padding-top: 88px; }
-  .products.is-flow .product::after { display: none; }
-  .products.is-flow .product-inner { flex-direction: column; align-items: stretch; justify-content: flex-start; height: auto; gap: 24px; padding: 0 max(var(--pad), env(safe-area-inset-left)); }
-  .products.is-flow .gallery, .products.is-flow .info { width: 100%; }
-  .products.is-flow .zoom { height: auto; aspect-ratio: 5 / 4; border-radius: 20px; touch-action: pan-y; }
-  .products.is-flow .zoom:hover .zoom-img { transform: none; }
-  .products.is-flow .thumbs { gap: 10px; margin-top: 12px; }
-  .products.is-flow .thumb { width: 56px; height: 56px; border-radius: 8px; }
-  .products.is-flow .name { font-size: clamp(60px, 18vw, 120px); }
-  .products.is-flow .kz { font-size: clamp(30px, 8.6vw, 52px); }
-  .products.is-flow .desc { font-size: 16px; line-height: 1.55; }
-  .products.is-flow .specs { font-size: 14px; }
-  .products.is-flow .benefits ul { font-size: 15px; }
-  .products.is-flow .usage { font-size: 14px; }
-  /* цена и «Купить» закреплены внизу экрана, пока блок на виду */
-  .products.is-flow .buy-row {
-    position: sticky; bottom: 0; z-index: 3; justify-content: space-between; flex-wrap: nowrap; gap: 16px;
-    margin: 24px calc(max(var(--pad), env(safe-area-inset-left)) * -1) -40px;
-    padding: 18px max(var(--pad), env(safe-area-inset-left)) calc(16px + env(safe-area-inset-bottom));
-    background: linear-gradient(0deg, var(--bg2) 62%, rgb(255 255 255 / 0));
-  }
-  .products.is-flow .price { white-space: nowrap; }
-  .products.is-flow .price small { display: block; margin: 6px 0 0; }
-  .products.is-flow .buy { min-width: 160px; height: 54px; padding: 0 28px; font-size: 17px; }
 }
 
-/* планшет: галерея и текст рядом */
-@media (min-width: 768px) and (max-width: 1023px) {
+/* ======================================================================
+   Режим карточек без закрепления: телефон, планшет и низкие окна.
+   Правила привязаны к классу .is-flow, который ставит JS, а не к ширине:
+   так низкое окно на широком экране работает так же.
+   ====================================================================== */
+/* продукты: липкие карточки. Верх каждой подбирается в JS так, чтобы нижний край блока
+   упирался в низ экрана, пока следующая карточка наезжает сверху. */
+.products.is-flow { height: auto; overflow: visible; background: var(--ink); }
+.products.is-flow .product {
+  position: sticky; top: var(--stick, 0px); inset: auto; min-height: 0; overflow: visible;
+  padding: 96px 0 40px; border-radius: 30px 30px 0 0; box-shadow: 0 -24px 60px rgb(48 28 6 / .26);
+}
+.products.is-flow .product:first-child { border-radius: 0; box-shadow: none; padding-top: 88px; }
+.products.is-flow .product::after { display: none; }
+.products.is-flow .product-inner { flex-direction: column; align-items: stretch; justify-content: flex-start; height: auto; gap: 24px; padding: 0 max(var(--pad), env(safe-area-inset-left)); }
+.products.is-flow .gallery, .products.is-flow .info { width: 100%; }
+.products.is-flow .zoom { height: auto; aspect-ratio: 5 / 4; border-radius: 20px; touch-action: pan-y; }
+.products.is-flow .zoom:hover .zoom-img { transform: none; }
+.products.is-flow .thumbs { gap: 10px; margin-top: 12px; }
+.products.is-flow .thumb { width: 56px; height: 56px; border-radius: 8px; }
+.products.is-flow .name { font-size: clamp(60px, 18vw, 120px); }
+.products.is-flow .kz { font-size: clamp(30px, 8.6vw, 52px); }
+.products.is-flow .desc { font-size: 16px; line-height: 1.55; }
+.products.is-flow .specs { font-size: 14px; }
+.products.is-flow .benefits ul { font-size: 15px; }
+.products.is-flow .usage { font-size: 14px; }
+/* цена и «Купить» закреплены внизу экрана, пока блок на виду */
+.products.is-flow .buy-row {
+  position: sticky; bottom: 0; z-index: 3; justify-content: space-between; flex-wrap: nowrap; gap: 16px;
+  margin: 24px calc(max(var(--pad), env(safe-area-inset-left)) * -1) -40px;
+  padding: 18px max(var(--pad), env(safe-area-inset-left)) calc(16px + env(safe-area-inset-bottom));
+  background: linear-gradient(0deg, var(--bg2) 62%, rgb(255 255 255 / 0));
+}
+.products.is-flow .price { white-space: nowrap; }
+.products.is-flow .price small { display: block; margin: 6px 0 0; }
+.products.is-flow .buy { min-width: 160px; height: 54px; padding: 0 28px; font-size: 17px; }
+
+/* планшет и широкое низкое окно: галерея и текст рядом */
+@media (min-width: 768px) {
   .products.is-flow .product-inner { flex-direction: row; align-items: flex-start; gap: 36px; }
   .products.is-flow .gallery { width: 46%; position: sticky; top: 88px; }
   .products.is-flow .info { width: 54%; }
   .products.is-flow .zoom { aspect-ratio: 4 / 5; }
   .products.is-flow .name { font-size: clamp(64px, 10vw, 110px); }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
   .contact-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
 }
 
 @media (max-width: 1023px) {
   /* история: вертикальная раскладка главы, заголовок не залезает на картинку */
-  .story-head { padding: 78px max(var(--pad), env(safe-area-inset-left)) 0; background: linear-gradient(var(--paper) 78%, rgb(255 253 248 / 0)); }
+  .story-head { padding: 78px max(var(--pad), env(safe-area-inset-left)) 0; background: var(--paper); }
   .story-head h2 { font-size: clamp(32px, 8vw, 60px); }
   .rule { margin-top: 12px; }
-  .chapter { align-items: flex-start; align-items: safe center; padding: 190px var(--pad) 84px; }
+  .chapter { align-items: flex-start; align-items: safe center; padding: calc(var(--head, 185px) + 24px) var(--pad) 84px; }
   .chapter-grid { grid-template-columns: 1fr; gap: 22px; align-content: start; }
-  .chapter-img img { height: clamp(150px, 27svh, 340px); border-radius: 22px; }
-  .big-n { top: -.3em; left: auto; right: 0; font-size: clamp(110px, 30vw, 190px); }
+  .chapter-img img { height: clamp(110px, 24vh, 340px); height: clamp(110px, 24svh, 340px); border-radius: 22px; }
+  .big-n { top: -.06em; right: 0; transform: none; font-size: clamp(100px, min(30vw, 20vh), 190px); }
   .chapter h3 { font-size: clamp(40px, 10.6vw, 76px); }
   .chapter-desc { margin-top: 14px; font-size: 16px; letter-spacing: .01em; }
   .chapter-line { margin-top: 16px; }
@@ -282,13 +292,25 @@ b { font-weight: 600; }
   .r2 { right: -140px; bottom: 120px; }
 }
 
+/* невысокие окна: ужимаем заголовок и убираем второстепенное, чтобы глава помещалась */
+@media (max-height: 700px) {
+  .story-head { padding-top: 76px; }
+  .story-head .kicker { display: none; }
+  .chapter-line { display: none; }
+  .chapter-desc { font-size: 15px; }
+}
+@media (max-height: 700px) and (max-width: 1023px) {
+  .story-head { padding-top: 70px; }
+  .story-head h2 { font-size: clamp(28px, 7vw, 40px); }
+}
+
 /* низкие экраны (телефон в альбомной ориентации) */
 @media (max-height: 520px) and (orientation: landscape) {
   .hero-copy h1 { font-size: clamp(34px, 8vh, 56px); }
   .hero-copy p, .hero-cta { display: none; }
   .hero-chip { bottom: 24px; }
-  .chapter { padding-top: 160px; }
-  .chapter-img img { height: 34svh; }
+  .chapter-img img { height: 34vh; height: 34svh; }
+  .story-head h2 { font-size: 26px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
