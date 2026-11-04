@@ -30,6 +30,8 @@
   --display: "Cormorant Garamond", "Cormorant", Georgia, "Times New Roman", serif;
   --text: "Iosevka Charon Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   --ease: cubic-bezier(.76, 0, .24, 1);
+  /* запас высоты на телефонах: в Safari область страницы бывает ниже экрана на высоту панели */
+  --extra: 0px;
 }
 
 /* Lenis */
@@ -123,7 +125,7 @@ img { display: block; max-width: 100%; }
 main { position: relative; z-index: 2; }
 
 /* ---------- продукты: стопка, выезжающая при скролле ---------- */
-.products { position: relative; height: 100vh; height: 100lvh; overflow: hidden; background: #1a120a; }
+.products { position: relative; height: calc(100vh + var(--extra)) !important; height: calc(100lvh + var(--extra)) !important; overflow: hidden; background: #1a120a; }
 .product {
   --dim: 0; --sh: 0; position: absolute; inset: 0; color: var(--accent); overflow: hidden;
   background: linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
@@ -164,8 +166,8 @@ b { font-weight: 700; }
 .buy:hover { filter: brightness(1.18); transform: translateY(-1px); }
 
 /* ---------- история: горизонтальная прокрутка ---------- */
-.story { position: relative; background: var(--paper); color: var(--ink); }
-.story-sticky { position: relative; height: 100vh; height: 100lvh; overflow: hidden; }
+.story { position: relative; height: calc(100vh + var(--extra)) !important; height: calc(100lvh + var(--extra)) !important; background: var(--paper); color: var(--ink); }
+.story-sticky { position: relative; height: calc(100vh + var(--extra)); height: calc(100lvh + var(--extra)); overflow: hidden; }
 .story-head { position: absolute; top: 0; left: 0; width: 100%; z-index: 20; padding: clamp(76px, 10vh, 100px) var(--pad) 0; background: var(--paper); }
 .kicker { font-size: 11.5px; font-weight: 500; letter-spacing: .38em; text-transform: uppercase; color: rgba(0, 0, 0, .55); }
 .story-head h2 { margin-top: 10px; font: 500 clamp(30px, min(5vw, 8.2vh), 80px)/1 var(--display); letter-spacing: -.015em; }
@@ -257,7 +259,7 @@ b { font-weight: 700; }
    ====================================================================== */
 /* продукты: липкие карточки. Верх каждой подбирается в JS так, чтобы нижний край блока
    упирался в низ экрана, пока следующая карточка наезжает сверху. */
-.products.is-flow { height: auto; overflow: visible; background: var(--ink); }
+.products.is-flow { height: auto !important; overflow: visible; background: var(--ink); }
 .products.is-flow .product {
   position: sticky; top: var(--stick, 0px); inset: auto; min-height: 0; overflow: visible;
   padding: 96px 0 40px; border-radius: 30px 30px 0 0; box-shadow: 0 -24px 60px rgb(48 28 6 / .26);
@@ -498,3 +500,6 @@ b { font-weight: 700; }
   .preloader, .is-ready .rv > span { transition-duration: .01s; }
   .zoom-img { transition: none; }
 }
+
+@media (pointer: coarse) and (max-width: 1023px) { :root { --extra: 110px; } }
+@media (pointer: coarse) and (max-width: 1023px) { .story-progress { bottom: auto; top: calc(100vh - 64px); top: calc(100lvh - 64px); right: calc(var(--pad) + 62px); } }

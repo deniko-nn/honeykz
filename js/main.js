@@ -136,7 +136,9 @@
   var heroOn = true;
   function syncHero() {
     if (!hero) return;
-    var on = window.scrollY < window.innerHeight * 1.15;
+    /* главный экран нужен, пока блок мёдов не дошёл до верха окна (его высота = высота прокладки) */
+    var sp = document.querySelector('.spacer'), edge = sp ? sp.offsetHeight - 2 : window.innerHeight;
+    var on = window.scrollY < edge;
     if (on) {
       /* start() и setActive() безопасны при повторном вызове, поэтому включаем при каждой проверке */
       hero.setActive(true);
