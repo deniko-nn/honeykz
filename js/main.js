@@ -176,8 +176,10 @@
     products.classList.remove('is-flow');
     var compact = window.innerWidth < 768;
     products.classList.toggle('is-compact', compact);
-    gsap.set(panels, { zIndex: function (i) { return i; }, '--dim': 0, '--sh': 0 });
-    gsap.set(panels.slice(1), { yPercent: 100, borderTopLeftRadius: 40, borderTopRightRadius: 40 });
+    /* затемнение предыдущей карточки — отдельный слой: анимируем только его прозрачность (дёшево для слоёв) */
+    panels.forEach(function (p) { if (!$('.pdim', p)) { var d = document.createElement('div'); d.className = 'pdim'; p.appendChild(d); } });
+    gsap.set(panels, { zIndex: function (i) { return i; } });
+    gsap.set(panels.slice(1), { yPercent: 108, borderTopLeftRadius: 40, borderTopRightRadius: 40 });
     var tl = gsap.timeline({
       scrollTrigger: {
         trigger: products, start: 'top top',
@@ -201,10 +203,9 @@
     for (var i = 1; i < n; i++) {
       /* новая карточка поднимается и выпрямляет верхние углы */
       tl.to(panels[i], { yPercent: 0, borderTopLeftRadius: 0, borderTopRightRadius: 0, ease: 'none', duration: 1 }, i - 1);
-      /* тень появляется, только когда карточка уже выезжает, а не ждёт под экраном */
-      tl.to(panels[i], { '--sh': 1, ease: 'none', duration: 0.2 }, i - 1);
       /* предыдущая чуть сдвигается вверх и темнеет, уходя «вглубь» (без масштабирования, чтобы текст оставался чётким) */
-      tl.to(panels[i - 1], { yPercent: -5, '--dim': 0.34, borderTopLeftRadius: 32, borderTopRightRadius: 32, ease: 'none', duration: 1 }, i - 1);
+      tl.to(panels[i - 1], { yPercent: -5, borderTopLeftRadius: 32, borderTopRightRadius: 32, ease: 'none', duration: 1 }, i - 1);
+      tl.to($('.pdim', panels[i - 1]), { opacity: 0.34, ease: 'none', duration: 1 }, i - 1);
     }
     return function () { products.classList.remove('is-compact'); closeSheets(); };
   });
@@ -242,8 +243,9 @@
       if (i === 0) return;
       var prev = panels[i - 1];
       var st = { trigger: p, start: 'top 98%', end: 'top 12%', scrub: true };
-      fx.push(gsap.fromTo(prev, { '--dim': 0, yPercent: 0 }, { '--dim': 0.4, yPercent: -3, ease: 'none', scrollTrigger: st }));
-      fx.push(gsap.fromTo(p, { '--sh': 0 }, { '--sh': 1, ease: 'none', scrollTrigger: { trigger: p, start: 'top 100%', end: 'top 70%', scrub: true } }));
+      if (!$('.pdim', prev)) { var dm = document.createElement('div'); dm.className = 'pdim'; prev.appendChild(dm); }
+      fx.push(gsap.fromTo(prev, { yPercent: 0 }, { yPercent: -3, ease: 'none', scrollTrigger: st }));
+      fx.push(gsap.fromTo($('.pdim', prev), { opacity: 0 }, { opacity: 0.4, ease: 'none', scrollTrigger: st }));
       fx.push(gsap.fromTo($('.gallery', p), { y: 36, opacity: 0.35 }, { y: 0, opacity: 1, ease: 'none', scrollTrigger: { trigger: p, start: 'top 92%', end: 'top 38%', scrub: true } }));
       fx.push(gsap.fromTo($('.info', p), { y: 56, opacity: 0.2 }, { y: 0, opacity: 1, ease: 'none', scrollTrigger: { trigger: p, start: 'top 85%', end: 'top 30%', scrub: true } }));
     });
@@ -261,7 +263,7 @@
       ScrollTrigger.removeEventListener('refresh', layout);
       panels.forEach(function (p) { p.style.removeProperty('--stick'); });
       fx.forEach(function (t) { if (t.scrollTrigger) t.scrollTrigger.kill(); t.kill(); });
-      panels.forEach(function (p) { p.style.removeProperty('--dim'); p.style.removeProperty('--sh'); p.style.transform = ''; });
+      panels.forEach(function (p) { p.style.transform = ''; var d = $('.pdim', p); if (d) d.style.opacity = ''; });
     };
   });
 

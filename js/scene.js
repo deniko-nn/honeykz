@@ -5,8 +5,12 @@ window.HeroScene = function (canvas, opts) {
   var mobile = !!opts.mobile, reduce = !!opts.reduce;
   var BG = 0x120c07;
 
-  var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, powerPreference: 'high-performance' });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  /* Разрешение сцены: на экранах с плотностью ≥2 сглаживание краёв не нужно (его даёт сама плотность),
+     а само разрешение подстраивается под телефон: если кадры медленные, оно снижается. */
+  var dpr = window.devicePixelRatio || 1;
+  var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: dpr < 2, powerPreference: 'high-performance' });
+  var ratio = Math.min(dpr, 2), RATIO_MIN = 1;
+  renderer.setPixelRatio(ratio);
   renderer.outputEncoding = THREE.sRGBEncoding;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 0.85;
@@ -209,8 +213,26 @@ window.HeroScene = function (canvas, opts) {
   }
   window.addEventListener('resize', resize); resize();
 
+  /* Телефон: сцена рисуется не чаще ~30 раз в секунду и не сильнее, чем позволяет скорость кадров.
+     Прокрутка страницы идёт в том же потоке, поэтому лёгкая сцена = плавный скролл. */
+  var lastRender = 0, fpsT = 0, fpsN = 0, FRAME_MS = mobile ? 31 : 0;
+  function adapt(t) {
+    fpsN++;
+    if (!fpsT) { fpsT = t; return; }
+    if (t - fpsT < 1500) return;
+    var fps = fpsN * 1000 / (t - fpsT);
+    fpsT = t; fpsN = 0;
+    var want = mobile ? 24 : 45;          // ниже этой скорости снижаем разрешение
+    if (fps < want && ratio > RATIO_MIN) {
+      ratio = Math.max(RATIO_MIN, ratio - 0.25);
+      renderer.setPixelRatio(ratio); renderer.setSize(window.innerWidth, window.innerHeight, false);
+    }
+  }
   function frame(t) {
     raf = requestAnimationFrame(frame);
+    if (FRAME_MS && t && t - lastRender < FRAME_MS) return;
+    lastRender = t;
+    adapt(t);
     camera.position.x += (baseX + mouse.x * 4 - camera.position.x) * 0.03;
     camera.position.y += (baseY - mouse.y * 2 - camera.position.y) * 0.03;
     camera.lookAt(lookAt);
