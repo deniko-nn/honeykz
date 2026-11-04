@@ -117,12 +117,13 @@ img { display: block; max-width: 100%; }
 .hero-chip i { font: 400 13px var(--text); letter-spacing: .08em; opacity: .75; }
 .hero-chip:hover { background: #fff; color: var(--ink); }
 .hero-chip[hidden] { display: none; }
+.hero-fixed.is-off { visibility: hidden; }
 .no-webgl .hero-fixed { background: radial-gradient(60% 60% at 70% 55%, #5a3a12, var(--hero-bg) 70%); }
-.spacer { height: 100vh; height: 100svh; position: relative; z-index: 1; pointer-events: none; }
+.spacer { height: 100vh; height: 100lvh; position: relative; z-index: 1; pointer-events: none; }
 main { position: relative; z-index: 2; }
 
 /* ---------- продукты: стопка, выезжающая при скролле ---------- */
-.products { position: relative; height: 100vh; height: 100svh; overflow: hidden; background: #1a120a; }
+.products { position: relative; height: 100vh; height: 100lvh; overflow: hidden; background: #1a120a; }
 .product {
   --dim: 0; --sh: 0; position: absolute; inset: 0; color: var(--accent); overflow: hidden;
   background: linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
@@ -164,7 +165,7 @@ b { font-weight: 700; }
 
 /* ---------- история: горизонтальная прокрутка ---------- */
 .story { position: relative; background: var(--paper); color: var(--ink); }
-.story-sticky { position: relative; height: 100vh; height: 100svh; overflow: hidden; }
+.story-sticky { position: relative; height: 100vh; height: 100lvh; overflow: hidden; }
 .story-head { position: absolute; top: 0; left: 0; width: 100%; z-index: 20; padding: clamp(76px, 10vh, 100px) var(--pad) 0; background: var(--paper); }
 .kicker { font-size: 11.5px; font-weight: 500; letter-spacing: .38em; text-transform: uppercase; color: rgba(0, 0, 0, .55); }
 .story-head h2 { margin-top: 10px; font: 500 clamp(30px, min(5vw, 8.2vh), 80px)/1 var(--display); letter-spacing: -.015em; }
@@ -174,7 +175,7 @@ b { font-weight: 700; }
 .story-bar { flex: 1; height: 2px; background: rgba(0, 0, 0, .1); }
 .story-bar i { display: block; height: 100%; background: var(--ink); transform-origin: left; transform: scaleX(0); }
 /* верх содержимого главы = реальная высота заголовка (--head, ставит JS) + зазор */
-.chapter { width: var(--vw, 100vw); height: 100vh; height: 100svh; flex: none; display: flex; align-items: center; align-items: safe center; padding: calc(var(--head, 160px) + 28px) var(--pad) 76px; }
+.chapter { width: var(--vw, 100vw); height: 100vh; height: 100lvh; flex: none; display: flex; align-items: center; align-items: safe center; padding: calc(var(--head, 160px) + 28px) var(--pad) 76px; }
 .chapter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; width: 100%; max-width: 1400px; margin: 0 auto; }
 .chapter-img img { width: 100%; height: clamp(120px, 50vh, 500px); height: clamp(120px, 50svh, 500px); object-fit: cover; border-radius: 32px; }
 .chapter-text { position: relative; }
@@ -186,12 +187,12 @@ b { font-weight: 700; }
 .chapter-line i { width: 48px; height: 1px; background: rgba(0, 0, 0, .3); }
 
 /* ---------- контакты ---------- */
-.contact { position: relative; min-height: 100vh; min-height: 100svh; background: var(--ink); color: #fff; overflow: hidden; }
+.contact { position: relative; min-height: 100vh; min-height: 100lvh; background: var(--ink); color: #fff; overflow: hidden; }
 .rings { position: absolute; inset: 0; pointer-events: none; }
 .ring { position: absolute; border-radius: 50%; border: 1px solid rgba(255, 255, 255, .14); }
 .r1 { top: 80px; left: 80px; width: 288px; height: 288px; }
 .r2 { bottom: 80px; right: 80px; width: 384px; height: 384px; border-color: rgba(255, 255, 255, .08); }
-.contact-inner { position: relative; z-index: 2; max-width: 1280px; margin: 0 auto; min-height: 100vh; min-height: 100svh; padding: clamp(104px, 13vh, 150px) var(--pad) calc(24px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; justify-content: flex-start; }
+.contact-inner { position: relative; z-index: 2; max-width: 1280px; margin: 0 auto; min-height: 100vh; min-height: 100lvh; padding: clamp(104px, 13vh, 150px) var(--pad) calc(24px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; justify-content: flex-start; }
 .contact h2 { font: 500 clamp(46px, min(7.4vw, 11vh), 120px)/.96 var(--display); letter-spacing: -.02em; }
 .contact-lead { margin-top: clamp(14px, 3vh, 32px); max-width: 38em; color: rgba(255, 255, 255, .78); font-weight: 300; font-size: clamp(13px, 1.1vw, 15px); line-height: 1.8; letter-spacing: 0; }
 .contact-grid { margin-top: clamp(22px, 4.2vh, 56px); display: grid; grid-template-columns: 1fr 1fr; gap: 64px; }

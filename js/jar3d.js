@@ -25,8 +25,8 @@ window.Jar3D = (function () {
     x.closePath();
   }
   function drawLabel(c, o) {
-    var x = c.getContext('2d'), W = c.width, H = c.height, ink = o.ink || '#2a2218';
-    x.clearRect(0, 0, W, H);
+    var x = c.getContext('2d'), W = 512, H = 180, ink = o.ink || '#2a2218';
+    x.setTransform(2, 0, 0, 2, 0, 0); x.clearRect(0, 0, W, H);
     x.fillStyle = o.bg || '#f6eeda'; x.fillRect(0, 0, W, H);
     x.strokeStyle = ink; x.globalAlpha = 0.5; x.lineWidth = 1.5; x.strokeRect(10, 10, W - 20, H - 20);
     x.globalAlpha = 1; x.lineWidth = 3;
@@ -52,10 +52,10 @@ window.Jar3D = (function () {
     }
   }
   function labelTexture(o) {
-    var c = document.createElement('canvas'); c.width = 512; c.height = 180;
+    var c = document.createElement('canvas'); c.width = 1024; c.height = 360;
     drawLabel(c, o);
     var t = new THREE.CanvasTexture(c);
-    t.encoding = THREE.sRGBEncoding; t.anisotropy = 4;
+    t.encoding = THREE.sRGBEncoding; t.anisotropy = 8;
     t.userData = { redraw: function () { drawLabel(c, o); t.needsUpdate = true; } };
     return t;
   }

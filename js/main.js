@@ -145,6 +145,7 @@
       hero.deselect(); hero.setActive(false); hero.stop();
     }
     heroOn = on;
+    var hf = document.getElementById('hero'); if (hf) hf.classList.toggle('is-off', !on);
   }
   /* Проверяем не только при прокрутке, но и при движении мыши и касании: если какое-то
      событие прокрутки пропущено, главный экран всё равно включится. */
