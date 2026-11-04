@@ -170,7 +170,7 @@
   var mm = gsap.matchMedia();
   /* Закреплённая стопка: компьютер и телефон в портрете. На телефоне карточка умещается в один экран
      (is-compact), подробности открываются кнопкой «Подробнее». */
-  mm.add('(min-width: 1024px) and (min-height: 640px), (max-width: 767px) and (min-height: 560px)', function () {
+  mm.add('(min-width: 1024px) and (min-height: 640px) and (hover: hover) and (pointer: fine)', function () {
     var n = panels.length;
     if (n < 2) { products.classList.add('is-flow'); return; }
     products.classList.remove('is-flow');
@@ -232,39 +232,10 @@
     });
   });
   window.addEventListener('scroll', function () { if (document.querySelector('.product.is-more')) closeSheets(); }, { passive: true });
-  mm.add('(min-width: 768px) and (max-width: 1023px), (min-width: 1024px) and (max-height: 639px), (max-width: 767px) and (max-height: 559px)', function () {
+  /* Телефоны, планшеты и сенсорные экраны: обычный список без закрепления, наезда и анимации */
+  mm.add('(max-width: 1023px), (max-height: 639px), (hover: none), (pointer: coarse)', function () {
     products.classList.add('is-flow');
-    /* верх липкой карточки = высота экрана минус высота блока: нижний край упирается в низ экрана,
-       пока следующая карточка наезжает сверху */
-    /* Анимация наложения как на десктопе: пока следующая карточка наезжает, предыдущая темнеет
-       и чуть уходит вверх, а у наезжающей выпрямляются верхние углы. */
-    var fx = [];
-    panels.forEach(function (p, i) {
-      if (i === 0) return;
-      var prev = panels[i - 1];
-      var st = { trigger: p, start: 'top 98%', end: 'top 12%', scrub: true };
-      if (!$('.pdim', prev)) { var dm = document.createElement('div'); dm.className = 'pdim'; prev.appendChild(dm); }
-      fx.push(gsap.fromTo(prev, { yPercent: 0 }, { yPercent: -3, ease: 'none', scrollTrigger: st }));
-      fx.push(gsap.fromTo($('.pdim', prev), { opacity: 0 }, { opacity: 0.4, ease: 'none', scrollTrigger: st }));
-      fx.push(gsap.fromTo($('.gallery', p), { y: 36, opacity: 0.35 }, { y: 0, opacity: 1, ease: 'none', scrollTrigger: { trigger: p, start: 'top 92%', end: 'top 38%', scrub: true } }));
-      fx.push(gsap.fromTo($('.info', p), { y: 56, opacity: 0.2 }, { y: 0, opacity: 1, ease: 'none', scrollTrigger: { trigger: p, start: 'top 85%', end: 'top 30%', scrub: true } }));
-    });
-    function layout() {
-      panels.forEach(function (p) { p.style.setProperty('--stick', Math.min(0, window.innerHeight - p.offsetHeight) + 'px'); });
-    }
-    layout();
-    var ro = ('ResizeObserver' in window) ? new ResizeObserver(layout) : null;
-    if (ro) panels.forEach(function (p) { ro.observe(p); });
-    window.addEventListener('resize', layout);
-    ScrollTrigger.addEventListener('refresh', layout);
-    return function () {
-      if (ro) ro.disconnect();
-      window.removeEventListener('resize', layout);
-      ScrollTrigger.removeEventListener('refresh', layout);
-      panels.forEach(function (p) { p.style.removeProperty('--stick'); });
-      fx.forEach(function (t) { if (t.scrollTrigger) t.scrollTrigger.kill(); t.kill(); });
-      panels.forEach(function (p) { p.style.transform = ''; var d = $('.pdim', p); if (d) d.style.opacity = ''; });
-    };
+    return function () { products.classList.remove('is-flow'); };
   });
 
   /* ---------- галерея: зум под курсором и миниатюры ---------- */

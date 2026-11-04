@@ -259,17 +259,13 @@ b { font-weight: 700; }
    Правила привязаны к классу .is-flow, который ставит JS, а не к ширине:
    так низкое окно на широком экране работает так же.
    ====================================================================== */
-/* продукты: липкие карточки. Верх каждой подбирается в JS так, чтобы нижний край блока
-   упирался в низ экрана, пока следующая карточка наезжает сверху. */
-.products.is-flow { height: auto !important; overflow: visible; background: var(--ink); }
+/* продукты: на телефоне и планшете карточки идут обычным вертикальным списком, без закрепления и анимации */
+.products.is-flow { height: auto !important; overflow: visible; background: var(--paper); }
 .products.is-flow .product {
-  position: sticky; top: var(--stick, 0px); inset: auto; min-height: 0; overflow: visible;
-  padding: 96px 0 40px; border-radius: 30px 30px 0 0; box-shadow: 0 -24px 60px rgb(48 28 6 / .26);
+  position: relative; inset: auto; min-height: 0; overflow: visible; will-change: auto;
+  padding: 72px 0 48px; border-radius: 0; box-shadow: none; border-top: 1px solid rgb(80 50 10 / .12);
 }
-.products.is-flow .product:first-child { border-radius: 0; box-shadow: none; padding-top: 88px; }
-/* затемнение (.pdim) анимируется прозрачностью, тень статична */
-.products.is-flow .product { box-shadow: 0 -18px 40px rgb(48 28 6 / .26); will-change: auto; }
-.products.is-flow .product:first-child { box-shadow: none; }
+.products.is-flow .product:first-child { padding-top: 88px; border-top: 0; }
 .products.is-flow .product-inner { flex-direction: column; align-items: stretch; justify-content: flex-start; height: auto; gap: 24px; padding: 0 max(var(--pad), env(safe-area-inset-left)); }
 .products.is-flow .gallery, .products.is-flow .info { width: 100%; }
 .products.is-flow .zoom { height: auto; aspect-ratio: 5 / 4; border-radius: 20px; touch-action: pan-y; }
@@ -283,12 +279,7 @@ b { font-weight: 700; }
 .products.is-flow .benefits ul { font-size: 13px; }
 .products.is-flow .usage { font-size: 12.5px; }
 /* цена и «Купить» закреплены внизу экрана, пока блок на виду */
-.products.is-flow .buy-row {
-  position: sticky; bottom: 0; z-index: 3; justify-content: space-between; flex-wrap: nowrap; gap: 16px;
-  margin: 24px calc(max(var(--pad), env(safe-area-inset-left)) * -1) -40px;
-  padding: 18px max(var(--pad), env(safe-area-inset-left)) calc(16px + env(safe-area-inset-bottom));
-  background: linear-gradient(0deg, var(--bg2) 62%, rgb(255 255 255 / 0));
-}
+.products.is-flow .buy-row { position: static; justify-content: space-between; flex-wrap: nowrap; gap: 16px; margin: 26px 0 0; padding: 0; background: none; }
 .products.is-flow .price { white-space: nowrap; }
 .products.is-flow .price small { display: block; margin: 6px 0 0; }
 .products.is-flow .buy { min-width: 160px; height: 54px; padding: 0 28px; font-size: 17px; }
