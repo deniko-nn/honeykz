@@ -35,7 +35,7 @@
 }
 
 /* Горизонтальной прокрутки у страницы нет: прокладка закреплённого блока считается по ширине окна вместе с полосой прокрутки */
-html, body { overflow-x: clip; }
+html, body { overflow-x: hidden; overflow-x: clip; max-width: 100%; }
 .pin-spacer { width: 100% !important; max-width: 100% !important; }
 .products, .story { width: 100% !important; max-width: 100% !important; }
 
@@ -53,12 +53,13 @@ html { -webkit-text-size-adjust: 100%; -webkit-tap-highlight-color: transparent;
    Трек: контуры сот. Ползунок: соты, залитые мёдом. Работает в Chrome, Edge, Safari и Opera;
    Firefox не умеет рисовать узор на полосе, поэтому там она просто медового цвета. */
 @supports selector(::-webkit-scrollbar) {
-  ::-webkit-scrollbar { width: 16px; height: 16px; background: #1a120a; }
+  ::-webkit-scrollbar { width: 16px; background: #1a120a; }
   ::-webkit-scrollbar-track { background-color: #1a120a; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13.86' height='24.00' viewBox='0 0 13.86 24.00'%3E%3Cpolygon points='13.25%2C11.65 6.93%2C15.30 0.61%2C11.65 0.61%2C4.35 6.93%2C0.70 13.25%2C4.35' fill='none' fill-opacity='0' stroke='%23f0b93f' stroke-opacity='.4' stroke-width='1'/%3E%3Cpolygon points='6.32%2C23.65 0.00%2C27.30 -6.32%2C23.65 -6.32%2C16.35 -0.00%2C12.70 6.32%2C16.35' fill='none' fill-opacity='0' stroke='%23f0b93f' stroke-opacity='.4' stroke-width='1'/%3E%3Cpolygon points='20.18%2C23.65 13.86%2C27.30 7.53%2C23.65 7.53%2C16.35 13.86%2C12.70 20.18%2C16.35' fill='none' fill-opacity='0' stroke='%23f0b93f' stroke-opacity='.4' stroke-width='1'/%3E%3C/svg%3E"); background-size: 13.86px 24px; background-position: center top; }
   ::-webkit-scrollbar-thumb { background-color: #f0b93f; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13.86' height='24.00' viewBox='0 0 13.86 24.00'%3E%3Cpolygon points='13.86%2C12.00 6.93%2C16.00 -0.00%2C12.00 0.00%2C4.00 6.93%2C0.00 13.86%2C4.00' fill='none' stroke='%236b3a12' stroke-opacity='.85' stroke-width='1.2' stroke-linejoin='round'/%3E%3Cpolygon points='6.93%2C24.00 0.00%2C28.00 -6.93%2C24.00 -6.93%2C16.00 -0.00%2C12.00 6.93%2C16.00' fill='none' stroke='%236b3a12' stroke-opacity='.85' stroke-width='1.2' stroke-linejoin='round'/%3E%3Cpolygon points='20.78%2C24.00 13.86%2C28.00 6.93%2C24.00 6.93%2C16.00 13.86%2C12.00 20.78%2C16.00' fill='none' stroke='%236b3a12' stroke-opacity='.85' stroke-width='1.2' stroke-linejoin='round'/%3E%3C/svg%3E"); background-size: 13.86px 24px; background-position: center top; border-left: 1px solid #1a120a; border-right: 1px solid #1a120a; min-height: 48px; }
   ::-webkit-scrollbar-thumb:hover { filter: brightness(1.12); }
   ::-webkit-scrollbar-corner { background: #1a120a; }
-  ::-webkit-scrollbar:horizontal { height: 0; display: none; }
+  /* горизонтальной полосы нет вообще */
+  ::-webkit-scrollbar:horizontal { display: none; height: 0; }
 }
 @supports not selector(::-webkit-scrollbar) {
   html { scrollbar-color: #f0b93f #1a120a; scrollbar-width: auto; }
